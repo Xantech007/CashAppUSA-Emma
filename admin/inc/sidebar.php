@@ -40,12 +40,6 @@
     </a>
   </li><!-- End Dashboard Nav -->
   <li class="nav-item">
-    <a class="nav-link <?= $page == 'manage-admins.php' || $page == 'edit-admin.php' ? '' :  'collapsed'?> " href="manage-admins">
-      <i class="bi bi-person-plus-fill"></i>
-      <span>Manage Admins</span>
-    </a>
-  </li><!-- End Dashboard Nav -->
-  <li class="nav-item">
     <a class="nav-link <?= $page == 'manage-payment-methods.php' ? '' :  'collapsed'?> " href="manage-payment-methods">
       <i class="bi bi-wallet"></i>
       <span>Manage Payment Methods</span>
