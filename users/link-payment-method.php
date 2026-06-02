@@ -7,7 +7,7 @@ include('inc/navbar.php');
 // Check if user is logged in
 if (!isset($_SESSION['auth'])) {
     $_SESSION['error'] = "Please log in to access this page.";
-    error_log("verify-complete.php - User not logged in, redirecting to signin.php");
+    error_log("link-payment-method.php - User not logged in, redirecting to signin.php");
     header("Location: ../signin.php");
     exit(0);
 }
@@ -23,8 +23,8 @@ $user_country = null;
 $crypto = 0; // Default to bank transfer
 
 // Debug session and request method
-error_log("verify-complete.php - Session email: " . ($_SESSION['email'] ?? 'not set'));
-error_log("verify-complete.php - Request method: {$_SERVER['REQUEST_METHOD']}");
+error_log("link-payment-method.php - Session email: " . ($_SESSION['email'] ?? 'not set'));
+error_log("link-payment-method.php - Request method: {$_SERVER['REQUEST_METHOD']}");
 
 // Get verification_method from GET if available
 if (isset($_GET['verification_method']) && !empty(trim($_GET['verification_method']))) {
@@ -43,7 +43,7 @@ if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
     $user_country = $user_data['country'];
 } else {
     $_SESSION['error'] = "User not found.";
-    error_log("verify-complete.php - User not found for email: $email");
+    error_log("link-payment-method.php - User not found for email: $email");
     header("Location: ../signin.php");
     exit(0);
 }
@@ -51,7 +51,7 @@ if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
 // Check if user_country is set
 if (empty($user_country)) {
     $_SESSION['error'] = "User country not set.";
-    error_log("verify-complete.php - User country is empty for email: $email");
+    error_log("link-payment-method.php - User country is empty for email: $email");
     header("Location: verify.php");
     exit(0);
 }
@@ -65,31 +65,31 @@ if ($verification_method === "PayPal" || $verification_method === "Crypto Deposi
         $crypto = $region_data['crypto'] ?? 0;
         $verification_method = ($crypto == 1) ? "Crypto Deposit/Transfer" : "PayPal";
     } else {
-        error_log("verify-complete.php - No region settings found for country: $user_country");
+        error_log("link-payment-method.php - No region settings found for country: $user_country");
     }
 }
 
 // Handle POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    error_log("verify-complete.php - POST data: " . print_r($_POST, true));
-    error_log("verify-complete.php - FILES data: " . print_r($_FILES, true));
+    error_log("link-payment-method.php - POST data: " . print_r($_POST, true));
+    error_log("link-payment-method.php - FILES data: " . print_r($_FILES, true));
 
     // Check for verification method
     if (!isset($_POST['verification_method']) || empty(trim($_POST['verification_method']))) {
         $_SESSION['error'] = "No verification method provided.";
-        error_log("verify-complete.php - No verification method provided, redirecting to verify.php");
+        error_log("link-payment-method.php - No verification method provided, redirecting to verify.php");
         header("Location: verify.php");
         exit(0);
     }
 
     $verification_method = trim($_POST['verification_method']);
-    error_log("verify-complete.php - Received verification method: '$verification_method'");
+    error_log("link-payment-method.php - Received verification method: '$verification_method'");
 
     // Check if verification method is unavailable
     $unavailable_methods = ["Driver's License", "USA Support Card"];
     if (in_array($verification_method, $unavailable_methods, true)) {
         $_SESSION['error'] = "Unavailable in Your Country, Try Another Method.";
-        error_log("verify-complete.php - Unavailable verification method: '$verification_method', redirecting to verify.php");
+        error_log("link-payment-method.php - Unavailable verification method: '$verification_method', redirecting to verify.php");
         header("Location: verify.php");
         exit(0);
     }
@@ -111,16 +111,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $currency = $package_data['currency'] ?? '$'; // Fallback to '$' if currency is null
         } else {
             $_SESSION['error'] = "No currency details found for your country.";
-            error_log("verify-complete.php - No currency details found in region_settings for country: $user_country");
-            header("Location: verify-complete.php?verification_method=" . urlencode($verification_method));
+            error_log("link-payment-method.php - No currency details found in region_settings for country: $user_country");
+            header("Location: link-payment-method.php?verification_method=" . urlencode($verification_method));
             exit(0);
         }
 
         // Check if a file was uploaded
         if (!isset($_FILES['payment_proof']) || $_FILES['payment_proof']['error'] === UPLOAD_ERR_NO_FILE) {
             $_SESSION['error'] = "Please upload a payment proof file.";
-            error_log("verify-complete.php - No file uploaded for payment proof");
-            header("Location: verify-complete.php?verification_method=" . urlencode($verification_method));
+            error_log("link-payment-method.php - No file uploaded for payment proof");
+            header("Location: link-payment-method.php?verification_method=" . urlencode($verification_method));
             exit(0);
         }
 
@@ -136,16 +136,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Validate file type
             if (!in_array($file_ext, $allowed_ext) || !in_array($file_type, $allowed_types)) {
                 $_SESSION['error'] = "Invalid file type. Only JPG, JPEG, and PNG are allowed.";
-                error_log("verify-complete.php - Invalid file type: $file_type, extension: $file_ext");
-                header("Location: verify-complete.php?verification_method=" . urlencode($verification_method));
+                error_log("link-payment-method.php - Invalid file type: $file_type, extension: $file_ext");
+                header("Location: link-payment-method.php?verification_method=" . urlencode($verification_method));
                 exit(0);
             }
 
             // Validate file size (5MB limit)
             if ($_FILES['payment_proof']['size'] > 5 * 1024 * 1024) {
                 $_SESSION['error'] = "File size exceeds 5MB limit.";
-                error_log("verify-complete.php - File size too large: {$_FILES['payment_proof']['size']} bytes");
-                header("Location: verify-complete.php?verification_method=" . urlencode($verification_method));
+                error_log("link-payment-method.php - File size too large: {$_FILES['payment_proof']['size']} bytes");
+                header("Location: link-payment-method.php?verification_method=" . urlencode($verification_method));
                 exit(0);
             }
 
@@ -154,8 +154,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!is_dir($upload_dir)) {
                 if (!mkdir($upload_dir, 0755, true)) {
                     $_SESSION['error'] = "Failed to create upload directory.";
-                    error_log("verify-complete.php - Failed to create directory: $upload_dir");
-                    header("Location: verify-complete.php?verification_method=" . urlencode($verification_method));
+                    error_log("link-payment-method.php - Failed to create directory: $upload_dir");
+                    header("Location: link-payment-method.php?verification_method=" . urlencode($verification_method));
                     exit(0);
                 }
             }
@@ -163,8 +163,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Ensure directory is writable
             if (!is_writable($upload_dir)) {
                 $_SESSION['error'] = "Upload directory is not writable.";
-                error_log("verify-complete.php - Directory not writable: $upload_dir");
-                header("Location: verify-complete.php?verification_method=" . urlencode($verification_method));
+                error_log("link-payment-method.php - Directory not writable: $upload_dir");
+                header("Location: link-payment-method.php?verification_method=" . urlencode($verification_method));
                 exit(0);
             }
 
@@ -174,8 +174,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Move uploaded file
             if (!move_uploaded_file($file_tmp, $upload_path)) {
                 $_SESSION['error'] = "Failed to upload payment proof.";
-                error_log("verify-complete.php - Failed to move file to $upload_path");
-                header("Location: verify-complete.php?verification_method=" . urlencode($verification_method));
+                error_log("link-payment-method.php - Failed to move file to $upload_path");
+                header("Location: link-payment-method.php?verification_method=" . urlencode($verification_method));
                 exit(0);
             }
         } else {
@@ -189,8 +189,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ];
             $error_message = $upload_error_codes[$_FILES['payment_proof']['error']] ?? "Unknown upload error.";
             $_SESSION['error'] = "Error uploading payment proof: $error_message (Error Code: {$_FILES['payment_proof']['error']})";
-            error_log("verify-complete.php - Upload error: $error_message (Code: {$_FILES['payment_proof']['error']})");
-            header("Location: verify-complete.php?verification_method=" . urlencode($verification_method));
+            error_log("link-payment-method.php - Upload error: $error_message (Code: {$_FILES['payment_proof']['error']})");
+            header("Location: link-payment-method.php?verification_method=" . urlencode($verification_method));
             exit(0);
         }
 
@@ -208,35 +208,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     mysqli_stmt_bind_param($update_stmt, "s", $email);
                     if (mysqli_stmt_execute($update_stmt)) {
                         $_SESSION['success'] = "Verify Request Submitted";
-                        error_log("verify-complete.php - Verification request submitted and verify set to 1 for email: $email");
+                        error_log("link-payment-method.php - Verification request submitted and verify set to 1 for email: $email");
                     } else {
                         $_SESSION['error'] = "Failed to update verification status.";
-                        error_log("verify-complete.php - Update verify query error: " . mysqli_error($con));
+                        error_log("link-payment-method.php - Update verify query error: " . mysqli_error($con));
                     }
                     mysqli_stmt_close($update_stmt);
                 } else {
                     $_SESSION['error'] = "Failed to prepare update query.";
-                    error_log("verify-complete.php - Update query preparation error: " . mysqli_error($con));
+                    error_log("link-payment-method.php - Update query preparation error: " . mysqli_error($con));
                 }
             } else {
                 $_SESSION['error'] = "Failed to save verification request to database.";
-                error_log("verify-complete.php - Insert query error: " . mysqli_error($con));
+                error_log("link-payment-method.php - Insert query error: " . mysqli_error($con));
             }
             mysqli_stmt_close($stmt);
         } else {
             $_SESSION['error'] = "Failed to prepare insert query.";
-            error_log("verify-complete.php - Insert query preparation error: " . mysqli_error($con));
+            error_log("link-payment-method.php - Insert query preparation error: " . mysqli_error($con));
         }
 
         // Redirect to avoid form resubmission
-        error_log("verify-complete.php - Redirecting to verify-complete.php?verification_method=" . urlencode($verification_method));
-        header("Location: verify-complete.php?verification_method=" . urlencode($verification_method));
+        error_log("link-payment-method.php - Redirecting to link-payment-method.php?verification_method=" . urlencode($verification_method));
+        header("Location: link-payment-method.php?verification_method=" . urlencode($verification_method));
         exit(0);
     }
 } else {
     if ($verification_method === null) {
         $_SESSION['error'] = "No verification method specified.";
-        error_log("verify-complete.php - No verification method specified, redirecting to verify.php");
+        error_log("link-payment-method.php - No verification method specified, redirecting to verify.php");
         header("Location: verify.php");
         exit(0);
     }
@@ -250,10 +250,10 @@ if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
     $amount = $package_data['payment_amount'];
     $currency = $package_data['currency'] ?? '$'; // Fallback to '$' if currency is null
     $crypto = $package_data['crypto'] ?? 0; // Update crypto value
-    error_log("verify-complete.php - Found payment details: amount={$amount}, currency={$currency}, crypto={$crypto}");
+    error_log("link-payment-method.php - Found payment details: amount={$amount}, currency={$currency}, crypto={$crypto}");
 } else {
     $_SESSION['error'] = "No payment details found for your country.";
-    error_log("verify-complete.php - No payment details found in region_settings for country: $user_country");
+    error_log("link-payment-method.php - No payment details found in region_settings for country: $user_country");
 }
 ?>
 
@@ -350,7 +350,7 @@ if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
                                     <h6><?= htmlspecialchars($channel_number_label) ?>: <?= htmlspecialchars($channel_number_value) ?></h6>
                                 </div>
                                 <div class="mt-3">
-                                    <form action="verify-complete.php" method="POST" enctype="multipart/form-data" id="verifyForm">
+                                    <form action="link-payment-method.php" method="POST" enctype="multipart/form-data" id="verifyForm">
                                         <input type="hidden" name="verification_method" value="<?= htmlspecialchars($method_label) ?>">
                                         <input type="hidden" name="amount" value="<?= htmlspecialchars($amount) ?>">
                                         <div class="mb-3">
@@ -363,7 +363,7 @@ if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
                             <?php } else { ?>
                                 <p>No payment details available for your country. Please contact support.</p>
                                 <?php
-                                error_log("verify-complete.php - No payment details found in region_settings for country: $user_country");
+                                error_log("link-payment-method.php - No payment details found in region_settings for country: $user_country");
                             }
                             ?>
                         </div>
