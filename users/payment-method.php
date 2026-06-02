@@ -23,8 +23,7 @@ if (!isset($_SESSION['auth'])) {
         </nav>
     </div>
 
-    <?php
-    if (isset($_SESSION['error'])) { ?>
+    <?php if (isset($_SESSION['error'])) { ?>
         <div class="modal fade show" id="errorModal" tabindex="-1" style="display:block;" aria-modal="true" role="dialog">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -49,59 +48,53 @@ if (!isset($_SESSION['auth'])) {
     }
     ?>
 
-    <div class="container">
+    <div class="container text-center">
         <div class="row justify-content-center">
-            <div class="col-md-7">
+            <div class="col-md-6">
 
                 <div class="card">
-                    <div class="card-header text-center">
+                    <div class="card-header">
                         Select Payment Method
                     </div>
 
-                    <div class="card-body">
+                    <div class="card-body mt-3">
 
-                        <form action="link-payment-method.php" method="POST">
+                        <?php
+                        $query = "SELECT * FROM payment_method WHERE status='1' ORDER BY id ASC";
+                        $query_run = mysqli_query($con, $query);
+                        ?>
 
-                            <?php
-                            $query = "SELECT * FROM payment_method WHERE status='1' ORDER BY id ASC";
-                            $query_run = mysqli_query($con, $query);
+                        <?php if ($query_run && mysqli_num_rows($query_run) > 0) { ?>
 
-                            if ($query_run && mysqli_num_rows($query_run) > 0) {
+                            <form action="link-payment-method.php" method="POST">
 
-                                while ($row = mysqli_fetch_assoc($query_run)) {
-                            ?>
+                                <div class="mb-3">
+                                    <select class="form-select" name="verification_method" required>
+                                        <option value="" selected disabled>
+                                            Select a payment method
+                                        </option>
 
-                                    <label class="payment-option">
-                                        <input
-                                            type="radio"
-                                            name="verification_method"
-                                            value="<?= htmlspecialchars($row['method_name']); ?>"
-                                            required>
-
-                                        <div class="payment-card">
-                                            <img src="<?= htmlspecialchars($row['icon']); ?>"
-                                                 alt="<?= htmlspecialchars($row['method_name']); ?>">
-
-                                            <span>
+                                        <?php while ($row = mysqli_fetch_assoc($query_run)) { ?>
+                                            <option value="<?= htmlspecialchars($row['method_name']); ?>">
                                                 <?= htmlspecialchars($row['method_name']); ?>
-                                            </span>
-                                        </div>
-                                    </label>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
 
-                            <?php
-                                }
-                            } else {
-                                echo '<div class="alert alert-warning text-center">No payment methods available.</div>';
-                            }
-                            ?>
-
-                            <div class="text-center mt-4">
-                                <button type="submit" class="btn btn-primary px-5">
+                                <button type="submit" class="btn btn-primary mt-3">
                                     Proceed
                                 </button>
+
+                            </form>
+
+                        <?php } else { ?>
+
+                            <div class="alert alert-warning">
+                                No payment methods available.
                             </div>
 
-                        </form>
+                        <?php } ?>
 
                     </div>
                 </div>
@@ -128,47 +121,15 @@ body {
 
 #main {
     flex: 1 0 auto;
-}
-
-.payment-option {
-    display: block;
-    margin-bottom: 15px;
-    cursor: pointer;
-}
-
-.payment-option input[type="radio"] {
-    display: none;
-}
-
-.payment-card {
-    border: 2px solid #e9ecef;
-    border-radius: 12px;
-    padding: 15px;
     display: flex;
-    align-items: center;
-    transition: .3s;
-    background: #fff;
+    flex-direction: column;
 }
 
-.payment-card img {
-    width: 50px;
-    height: 50px;
-    object-fit: contain;
-    margin-right: 15px;
-}
-
-.payment-card span {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.payment-option input[type="radio"]:checked + .payment-card {
-    border-color: #0d6efd;
-    background: rgba(13,110,253,.08);
-}
-
-.payment-card:hover {
-    border-color: #0d6efd;
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .footer {
@@ -176,7 +137,7 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    background: #f8f9fa;
+    background-color: #f8f9fa;
     z-index: 1000;
     text-align: center;
     padding: 10px 0;
@@ -184,6 +145,13 @@ body {
 
 body {
     padding-bottom: 60px;
+}
+
+@media (max-width: 576px) {
+    .footer {
+        padding: 5px 0;
+        font-size: 14px;
+    }
 }
 </style>
 
