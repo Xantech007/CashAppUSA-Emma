@@ -46,11 +46,11 @@ if (!empty($user_country)) {
 
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Connect Payment Method</h1>
+        <h1>Link Payment Method</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index">Home</a></li>
-                <li class="breadcrumb-item active">Connect</li>
+                <li class="breadcrumb-item active">Link</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -86,7 +86,7 @@ if (!empty($user_country)) {
                         Select Payment Method
                     </div>
                     <div class="card-body mt-3">
-                        <form action="connect-payment-method.php" method="POST">
+                        <form action="link-payment-method.php" method="POST">
                             <div class="mb-3">
                                 <select class="form-select" id="verification_method" name="verification_method" required>
                                     <option value="" disabled selected>Select a payment method</option>
