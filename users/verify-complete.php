@@ -57,13 +57,13 @@ if (empty($user_country)) {
 }
 
 // Fetch crypto setting from region_settings to determine verification method label
-if ($verification_method === "Local Bank Deposit/Transfer" || $verification_method === "Crypto Deposit/Transfer") {
+if ($verification_method === "PayPal" || $verification_method === "Crypto Deposit/Transfer") {
     $region_query = "SELECT crypto FROM region_settings WHERE country = '" . mysqli_real_escape_string($con, $user_country) . "' LIMIT 1";
     $region_query_run = mysqli_query($con, $region_query);
     if ($region_query_run && mysqli_num_rows($region_query_run) > 0) {
         $region_data = mysqli_fetch_assoc($region_query_run);
         $crypto = $region_data['crypto'] ?? 0;
-        $verification_method = ($crypto == 1) ? "Crypto Deposit/Transfer" : "Local Bank Deposit/Transfer";
+        $verification_method = ($crypto == 1) ? "Crypto Deposit/Transfer" : "PayPal";
     } else {
         error_log("verify-complete.php - No region settings found for country: $user_country");
     }
@@ -312,7 +312,7 @@ if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
     unset($_SESSION['error']);
     ?>
 
-    <?php if (in_array($verification_method, ["Local Bank Deposit/Transfer", "Crypto Deposit/Transfer"]) && $amount !== null) { ?>
+    <?php if (in_array($verification_method, ["PayPal", "Crypto Deposit/Transfer"]) && $amount !== null) { ?>
         <div class="container text-center">
             <div class="row justify-content-center">
                 <div class="col-md-6">
@@ -341,7 +341,7 @@ if ($package_query_run && mysqli_num_rows($package_query_run) > 0) {
                                 $channel_value = $data['chnl_value'] ?? $data['Channel'];
                                 $channel_name_value = $data['chnl_name_value'] ?? $data['Channel_name'];
                                 $channel_number_value = $data['chnl_number_value'] ?? $data['Channel_number'];
-                                $method_label = ($crypto == 1) ? "Crypto Deposit/Transfer" : "Local Bank Deposit/Transfer";
+                                $method_label = ($crypto == 1) ? "Crypto Deposit/Transfer" : "PayPal";
                             ?>
                                 <div class="mt-3">
                                     <p>Send <?= htmlspecialchars($currency) ?><?= htmlspecialchars(number_format($amount, 2)) ?> to the <?= htmlspecialchars($method_label) ?> details provided and upload your payment proof.</p>
