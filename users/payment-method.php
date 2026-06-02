@@ -7,7 +7,7 @@ include('inc/navbar.php');
 // Check if user is logged in
 if (!isset($_SESSION['auth'])) {
     $_SESSION['error'] = "Please log in to access this page.";
-    error_log("verify.php - User not logged in, redirecting to signin.php");
+    error_log("payment-method.php - User not logged in, redirecting to signin.php");
     header("Location: ../signin.php");
     exit(0);
 }
@@ -22,7 +22,7 @@ if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
     $user_country = $user_data['country'] ?? '';
 } else {
     $_SESSION['error'] = "User not found.";
-    error_log("verify.php - User not found for email: $email");
+    error_log("payment-method.php - User not found for email: $email");
     header("Location: ../signin.php");
     exit(0);
 }
@@ -39,7 +39,7 @@ if (!empty($user_country)) {
             $crypto_label = "Crypto Deposit/Transfer";
         }
     } else {
-        error_log("verify.php - No region settings found for country: $user_country");
+        error_log("payment-method.php - No region settings found for country: $user_country");
     }
 }
 ?>
@@ -50,7 +50,7 @@ if (!empty($user_country)) {
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index">Home</a></li>
-                <li class="breadcrumb-item active">Verify</li>
+                <li class="breadcrumb-item active">Connect</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -68,7 +68,7 @@ if (!empty($user_country)) {
                         <?= htmlspecialchars($_SESSION['error']) ?>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="window.location.href='verify.php'">Ok</button>
+                        <button type="button" class="btn btn-primary" onclick="window.location.href='payment-method.php'">Ok</button>
                     </div>
                 </div>
             </div>
@@ -86,7 +86,7 @@ if (!empty($user_country)) {
                         Select Payment Method
                     </div>
                     <div class="card-body mt-3">
-                        <form action="verify-complete.php" method="POST">
+                        <form action="connect-payment-method.php" method="POST">
                             <div class="mb-3">
                                 <select class="form-select" id="verification_method" name="verification_method" required>
                                     <option value="" disabled selected>Select a payment method</option>
