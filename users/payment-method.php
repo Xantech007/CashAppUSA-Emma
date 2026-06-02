@@ -23,8 +23,9 @@ if (!isset($_SESSION['auth'])) {
         </nav>
     </div>
 
-    <?php if (isset($_SESSION['error'])) { ?>
-        <div class="modal fade show" id="errorModal" tabindex="-1" style="display:block;" aria-modal="true" role="dialog">
+    <?php
+    if (isset($_SESSION['error'])) { ?>
+        <div class="modal fade show" id="errorModal" tabindex="-1" style="display:block;">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -35,7 +36,8 @@ if (!isset($_SESSION['auth'])) {
                         <?= htmlspecialchars($_SESSION['error']); ?>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="window.location.href='payment-method.php'">
+                        <button type="button" class="btn btn-primary"
+                            onclick="window.location.href='payment-method.php'">
                             OK
                         </button>
                     </div>
@@ -48,53 +50,70 @@ if (!isset($_SESSION['auth'])) {
     }
     ?>
 
-    <div class="container text-center">
+    <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-6">
+            <div class="col-md-7">
 
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header text-center">
                         Select Payment Method
                     </div>
 
-                    <div class="card-body mt-3">
+                    <div class="card-body">
 
-                        <?php
-                        $query = "SELECT * FROM payment_method WHERE status='1' ORDER BY id ASC";
-                        $query_run = mysqli_query($con, $query);
-                        ?>
+                        <form action="link-payment-method.php" method="POST">
 
-                        <?php if ($query_run && mysqli_num_rows($query_run) > 0) { ?>
+                            <input type="hidden"
+                                name="verification_method"
+                                id="verification_method"
+                                required>
 
-                            <form action="link-payment-method.php" method="POST">
+                            <div class="custom-dropdown">
 
-                                <div class="mb-3">
-                                    <select class="form-select" name="verification_method" required>
-                                        <option value="" selected disabled>
-                                            Select a payment method
-                                        </option>
-
-                                        <?php while ($row = mysqli_fetch_assoc($query_run)) { ?>
-                                            <option value="<?= htmlspecialchars($row['method_name']); ?>">
-                                                <?= htmlspecialchars($row['method_name']); ?>
-                                            </option>
-                                        <?php } ?>
-                                    </select>
+                                <div class="dropdown-selected" id="dropdownSelected">
+                                    <span>Select Payment Method</span>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary mt-3">
-                                    Proceed
-                                </button>
+                                <div class="dropdown-options" id="dropdownOptions">
 
-                            </form>
+                                    <?php
+                                    $query = "SELECT * FROM payment_method WHERE status='1' ORDER BY id ASC";
+                                    $query_run = mysqli_query($con, $query);
 
-                        <?php } else { ?>
+                                    if ($query_run && mysqli_num_rows($query_run) > 0) {
 
-                            <div class="alert alert-warning">
-                                No payment methods available.
+                                        while ($row = mysqli_fetch_assoc($query_run)) {
+                                    ?>
+
+                                            <div class="dropdown-option"
+                                                data-value="<?= htmlspecialchars($row['method_name']); ?>"
+                                                data-icon="<?= htmlspecialchars($row['icon']); ?>">
+
+                                                <img src="<?= htmlspecialchars($row['icon']); ?>"
+                                                    alt="<?= htmlspecialchars($row['method_name']); ?>">
+
+                                                <span><?= htmlspecialchars($row['method_name']); ?></span>
+
+                                            </div>
+
+                                    <?php
+                                        }
+                                    } else {
+                                        echo '<div class="text-center p-3">No payment methods available.</div>';
+                                    }
+                                    ?>
+
+                                </div>
+
                             </div>
 
-                        <?php } ?>
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary px-5">
+                                    Proceed
+                                </button>
+                            </div>
+
+                        </form>
 
                     </div>
                 </div>
@@ -117,19 +136,67 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    padding-bottom: 60px;
 }
 
 #main {
     flex: 1 0 auto;
-    display: flex;
-    flex-direction: column;
 }
 
-.container {
-    flex: 1;
+/* Custom Dropdown */
+
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.dropdown-selected {
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    background: #fff;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    align-items: center;
+    min-height: 55px;
+}
+
+.dropdown-selected img {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    margin-right: 10px;
+}
+
+.dropdown-options {
+    display: none;
+    position: absolute;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    margin-top: 5px;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 9999;
+}
+
+.dropdown-option {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    cursor: pointer;
+}
+
+.dropdown-option:hover {
+    background: #f8f9fa;
+}
+
+.dropdown-option img {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    margin-right: 10px;
 }
 
 .footer {
@@ -137,22 +204,49 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    background-color: #f8f9fa;
+    background: #f8f9fa;
     z-index: 1000;
     text-align: center;
     padding: 10px 0;
 }
-
-body {
-    padding-bottom: 60px;
-}
-
-@media (max-width: 576px) {
-    .footer {
-        padding: 5px 0;
-        font-size: 14px;
-    }
-}
 </style>
+
+<script>
+const selected = document.getElementById('dropdownSelected');
+const options = document.getElementById('dropdownOptions');
+const hiddenInput = document.getElementById('verification_method');
+
+selected.addEventListener('click', () => {
+    options.style.display =
+        options.style.display === 'block' ? 'none' : 'block';
+});
+
+document.querySelectorAll('.dropdown-option').forEach(option => {
+
+    option.addEventListener('click', function() {
+
+        let value = this.dataset.value;
+        let icon = this.dataset.icon;
+
+        hiddenInput.value = value;
+
+        selected.innerHTML = `
+            <img src="${icon}" alt="">
+            <span>${value}</span>
+        `;
+
+        options.style.display = 'none';
+    });
+
+});
+
+document.addEventListener('click', function(e) {
+
+    if (!e.target.closest('.custom-dropdown')) {
+        options.style.display = 'none';
+    }
+
+});
+</script>
 
 </html>
