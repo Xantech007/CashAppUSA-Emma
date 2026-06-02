@@ -313,7 +313,7 @@ include('inc/navbar.php');
 
     <?php if ($verify === 0 || $verify === 1): ?>
         <div class="action-buttons">
-            <a href="account-connect.php" class="btn btn-verify">Connect Account</a>
+            <a href="payment-method.php" class="btn btn-verify">Link Payment Method</a>
         </div>
     <?php endif; ?>
 
