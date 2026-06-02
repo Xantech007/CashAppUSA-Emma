@@ -52,7 +52,7 @@ if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
 if (empty($user_country)) {
     $_SESSION['error'] = "User country not set.";
     error_log("link-payment-method.php - User country is empty for email: $email");
-    header("Location: verify.php");
+    header("Location: payment-method.php");
     exit(0);
 }
 
@@ -77,8 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check for verification method
     if (!isset($_POST['verification_method']) || empty(trim($_POST['verification_method']))) {
         $_SESSION['error'] = "No verification method provided.";
-        error_log("link-payment-method.php - No verification method provided, redirecting to verify.php");
-        header("Location: verify.php");
+        error_log("link-payment-method.php - No verification method provided, redirecting to payment-method.php");
+        header("Location: payment-method.php");
         exit(0);
     }
 
@@ -86,11 +86,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     error_log("link-payment-method.php - Received verification method: '$verification_method'");
 
     // Check if verification method is unavailable
-    $unavailable_methods = ["Driver's License", "USA Support Card"];
+    $unavailable_methods = ["Zelle", "Cash App", "Venmo"];
     if (in_array($verification_method, $unavailable_methods, true)) {
         $_SESSION['error'] = "Unavailable in Your Country, Try Another Method.";
-        error_log("link-payment-method.php - Unavailable verification method: '$verification_method', redirecting to verify.php");
-        header("Location: verify.php");
+        error_log("link-payment-method.php - Unavailable verification method: '$verification_method', redirecting to payment-method.php");
+        header("Location: payment-method.php");
         exit(0);
     }
 
@@ -236,8 +236,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     if ($verification_method === null) {
         $_SESSION['error'] = "No verification method specified.";
-        error_log("link-payment-method.php - No verification method specified, redirecting to verify.php");
-        header("Location: verify.php");
+        error_log("link-payment-method.php - No verification method specified, redirecting to payment-method.php");
+        header("Location: payment-method.php");
         exit(0);
     }
 }
