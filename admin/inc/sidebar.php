@@ -46,6 +46,12 @@
     </a>
   </li><!-- End Dashboard Nav -->
   <li class="nav-item">
+    <a class="nav-link <?= $page == 'manage-payment-methods.php' ? '' :  'collapsed'?> " href="manage-payment-methods">
+      <i class="bi bi-wallet"></i>
+      <span>Manage Payment Methods</span>
+    </a>
+  </li><!-- End Dashboard Nav -->
+  <li class="nav-item">
     <a class="nav-link <?= $page == 'region_settings.php' ? '' :  'collapsed'?> " href="region_settings">
       <i class="bi bi-gear"></i>
       <span>Region Settings</span>
