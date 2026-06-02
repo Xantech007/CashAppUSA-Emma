@@ -86,9 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     error_log("link-payment-method.php - Received verification method: '$verification_method'");
 
     // Check if verification method is unavailable
-    $unavailable_methods = ["Zelle", "Cash App", "Venmo"];
+    $unavailable_methods = [];
     if (in_array($verification_method, $unavailable_methods, true)) {
-        $_SESSION['error'] = "Unavailable in Your Country, Try Another Method.";
+        $_SESSION['error'] = "Currently Unavailable";
         error_log("link-payment-method.php - Unavailable verification method: '$verification_method', redirecting to payment-method.php");
         header("Location: payment-method.php");
         exit(0);
