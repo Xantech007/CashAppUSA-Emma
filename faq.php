@@ -42,7 +42,7 @@ include('includes/navbar.php');
                         Frequently Asked Questions
                     </h2>
                     <p class="text">
-                        Common questions about scanning CashTags, claiming rewards, and withdrawing funds on our platform.
+                        Common questions about scanning TeslaTags, claiming rewards, and withdrawing funds on our platform.
                     </p>
                 </div>
             </div>
@@ -59,19 +59,19 @@ include('includes/navbar.php');
                             </div>
                             <div id="collapseOne" class="collapse show" data-parent="#tour-faq2">
                                 <div class="accordion-body">
-                                    To start, click the "Sign Up" button on our homepage, fill out the required information, and create your account. Once registered, you can begin scanning CashTags to claim rewards.
+                                    To start, click the "Sign Up" button on our homepage, fill out the required information, and create your account. Once registered, you can begin scanning TeslaTags to claim rewards.
                                 </div>
                             </div>
                         </div>
                         <div class="single-accordion">
                             <div class="accordion-header">
                                 <h4 class="title collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    <i class="fas fa-qrcode"></i> How do I scan a CashTag?
+                                    <i class="fas fa-qrcode"></i> How do I scan a TeslaTag?
                                 </h4>
                             </div>
                             <div id="collapseTwo" class="collapse" data-parent="#tour-faq2">
                                 <div class="accordion-body">
-                                    Log in to your account, navigate to the "Scan CashTag" section, and use your device to scan the CashTag code. Follow the prompts to claim your reward.
+                                    Log in to your account, navigate to the "Scan TeslaTag" section, and use your device to scan the TeslaTag code. Follow the prompts to claim your reward.
                                 </div>
                             </div>
                         </div>
@@ -120,12 +120,12 @@ include('includes/navbar.php');
                         <div class="single-accordion">
                             <div class="accordion-header">
                                 <h4 class="title collapsed" data-toggle="collapse" data-target="#collapse6" aria-expanded="false" aria-controls="collapse6">
-                                    <i class="fas fa-mobile-alt"></i> Is there a mobile app for scanning CashTags?
+                                    <i class="fas fa-mobile-alt"></i> Is there a mobile app for scanning TeslaTags?
                                 </h4>
                             </div>
                             <div id="collapse6" class="collapse" data-parent="#tour-faq3">
                                 <div class="accordion-body">
-                                    Yes, our mobile app is available for iOS and Android. Download it from the App Store or Google Play to scan CashTags and manage your rewards on the go.
+                                    Yes, our mobile app is available for iOS and Android. Download it from the App Store or Google Play to scan TeslaTags and manage your rewards on the go.
                                 </div>
                             </div>
                         </div>
@@ -137,7 +137,7 @@ include('includes/navbar.php');
                             </div>
                             <div id="collapse7" class="collapse" data-parent="#tour-faq3">
                                 <div class="accordion-body">
-                                    Log in to your account and visit the "Transaction History" section on your dashboard to view all your past CashTag scans and withdrawals.
+                                    Log in to your account and visit the "Transaction History" section on your dashboard to view all your past TeslaTag scans and withdrawals.
                                 </div>
                             </div>
                         </div>
