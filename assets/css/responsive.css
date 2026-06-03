@@ -31,9 +31,9 @@
   .mainmenu-area{
     padding: 10px 0px;
     border-bottom: 0px;
-    background: -webkit-linear-gradient(to bottom, #4A00E0, #8E2DE2);  /* Chrome 10-25, Safari 5.1-6 */
-    background: -webkit-moz-gradient(to bottom, #4A00E0, #8E2DE2);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to bottom, #4A00E0, #8E2DE2); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: -webkit-linear-gradient(to bottom, #cc0000, #ff0000);  /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-moz-gradient(to bottom, #cc0000, #ff0000);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #cc0000, #ff0000); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   }
   .index3 .mainmenu-area,
