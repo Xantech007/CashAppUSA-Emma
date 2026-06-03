@@ -42,7 +42,7 @@ include('includes/navbar.php');
                         About Us
                     </h2>
                     <p class="text">
-                        We provide a seamless platform to scan CashTags, claim rewards, and withdraw funds effortlessly using cutting-edge technology.
+                        We provide a seamless platform to scan TeslaTags, claim rewards, and withdraw funds effortlessly using cutting-edge technology.
                     </p>
                 </div>
             </div>
@@ -60,7 +60,7 @@ include('includes/navbar.php');
                             The Easiest Way to Claim Rewards
                         </h4>
                         <p class="text">
-                            Our platform empowers users to scan CashTags, unlock exciting rewards, and withdraw funds quickly and securely.
+                            Our platform empowers users to scan TeslaTags, unlock exciting rewards, and withdraw funds quickly and securely.
                         </p>
                     </div>
                     <ul class="about-list with-icon">
@@ -86,10 +86,10 @@ include('includes/navbar.php');
                                 </div>
                                 <div class="inner-content">
                                     <h4 class="title">
-                                        Easy CashTag Scanning
+                                        Easy TeslaTag Scanning
                                     </h4>
                                     <p>
-                                        Scan CashTags to claim rewards in just a few clicks.
+                                        Scan TeslaTags to claim rewards in just a few clicks.
                                     </p>
                                 </div>
                             </div>
@@ -127,7 +127,7 @@ include('includes/navbar.php');
                         Why Choose Us
                     </h2>
                     <p class="text">
-                        Our platform offers a fast, secure, and easy way to claim and withdraw rewards using CashTags.
+                        Our platform offers a fast, secure, and easy way to claim and withdraw rewards using TeslaTags.
                     </p>
                 </div>
             </div>
@@ -191,7 +191,7 @@ include('includes/navbar.php');
                                             Instant Rewards
                                         </h4>
                                         <p class="text">
-                                            Scan CashTags to claim rewards quickly and easily. Our platform ensures you get your rewards without delay.
+                                            Scan TeslaTags to claim rewards quickly and easily. Our platform ensures you get your rewards without delay.
                                         </p>
                                     </div>
                                 </div>
