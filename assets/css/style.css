@@ -259,11 +259,11 @@ select:focus {
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
-  background: #F7F8FC !important;
+  background: #ffd0d0 !important;
 }
 
 .bg-color1 {
-  background: #F7F8FC;
+  background: #ffd0d0;
 }
 
 .section-heading {
@@ -1134,7 +1134,7 @@ select:focus {
 /* Why Choose Us Start */
 .choose_us {
   padding: 120px 0px 130px;
-  background: #F7F8FC;
+  background: #ffd0d0;
 }
 
 .choose_us .cu-menu {
@@ -1267,7 +1267,7 @@ select:focus {
   border-top: 0px;
   border-bottom: 0px;
   padding: 20px 15px;
-  background: #F7F8FC;
+  background: #ffd0d0;
 }
 
 .start-invest .table tr td {
@@ -1596,7 +1596,7 @@ select:focus {
 /* Our Advantage Area Start */
 .our-advantage {
   padding: 120px 0px 130px;
-  background: #F7F8FC;
+  background: #ffd0d0;
 }
 
 .our-advantage .content .title {
@@ -1685,7 +1685,7 @@ select:focus {
 /* Faq Area Start */
 .faq-area {
   padding: 130px 0px 130px;
-  background: #F7F8FC;
+  background: #ffd0d0;
 }
 
 .faq-area.home5 {
@@ -1880,7 +1880,7 @@ select:focus {
   height: 35px;
   border-radius: 50%;
   text-align: center;
-  background: #F7F8FC;
+  background: #ffd0d0;
   line-height: 35px;
   color: #000;
   box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.2);
@@ -2104,7 +2104,7 @@ select:focus {
 .single-blog-details .content blockquote {
   margin: 22px 0px 22px;
   display: block;
-  background: #F7F8FC;
+  background: #ffd0d0;
   padding: 34px 40px 37px;
   border-left: 4px solid var(--primary-color);
   font-size: 16px;
