@@ -11,7 +11,7 @@ include('inc/navbar.php');
         $email = mysqli_real_escape_string($con, $_SESSION['email']);
 
         // Fetch user data
-        $query = "SELECT balance, verify, message, country, verify_time, convert_currency
+        $query = "SELECT balance, message, country, convert_currency
                   FROM users
                   WHERE email = ?
                   LIMIT 1";
@@ -23,27 +23,11 @@ include('inc/navbar.php');
         if ($query_run && mysqli_num_rows($query_run) > 0) {
             $row = mysqli_fetch_assoc($query_run);
             $balance          = (float)$row['balance'];
-            $verify           = (int)($row['verify'] ?? 0);
             $message          = $row['message'] ?? '';
             $user_country     = $row['country'] ?? '';
-            $verify_time      = $row['verify_time'] ?? null;
             $convert_currency = (int)($row['convert_currency'] ?? 0);
 
-            // Handle verify timeout (315 minutes ≈ 5.25 hours)
-            if ($verify == 1 && !empty($verify_time)) {
-                $current_time = new DateTime('now', new DateTimeZone('Africa/Lagos'));
-                $verify_time_dt = new DateTime($verify_time, new DateTimeZone('Africa/Lagos'));
-                $interval = $current_time->diff($verify_time_dt);
-                $total_minutes_passed = ($interval->days * 24 * 60) + ($interval->h * 60) + $interval->i;
-                if ($total_minutes_passed >= 315) {
-                    $update_query = "UPDATE users SET verify = 0 WHERE email = ?";
-                    $update_stmt = mysqli_prepare($con, $update_query);
-                    mysqli_stmt_bind_param($update_stmt, "s", $email);
-                    mysqli_stmt_execute($update_stmt);
-                    mysqli_stmt_close($update_stmt);
-                    $verify = 0;
-                }
-            }
+
         } else {
             $_SESSION['error'] = "User not found.";
             error_log("withdrawals.php - User not found for email: $email");
@@ -51,6 +35,99 @@ include('inc/navbar.php');
             exit(0);
         }
         mysqli_stmt_close($stmt);
+
+        $link_status = -1;
+        $linked_method = '';
+        
+        $paymentQuery = mysqli_query(
+            $con,
+            "SELECT *
+             FROM user_payment_methods
+             WHERE user_id = (
+                 SELECT id
+                 FROM users
+                 WHERE email='$email'
+                 LIMIT 1
+             )
+             LIMIT 1"
+        );
+        
+        if ($paymentRow = mysqli_fetch_assoc($paymentQuery)) {
+        
+            $link_status = (int)$paymentRow['status'];
+        
+            $linked_method = $paymentRow['payment_method'];
+        
+            if ($linked_method == 'PayPal') {
+        
+                $channel_label = 'PayPal';
+                $channel_name_label = 'PayPal Email';
+                $channel_number_label = 'PayPal Account';
+        
+                $saved_channel =
+                    $paymentRow['paypal_email'];
+        
+                $saved_channel_name =
+                    $paymentRow['paypal_email'];
+        
+                $saved_channel_number =
+                    $paymentRow['paypal_email'];
+            }
+        
+            elseif ($linked_method == 'Cash App') {
+        
+                $channel_label = 'Cash App';
+        
+                $channel_name_label = 'Cash Tag';
+        
+                $channel_number_label = 'Cash Tag';
+        
+                $saved_channel =
+                    $paymentRow['cashapp_tag'];
+        
+                $saved_channel_name =
+                    $paymentRow['cashapp_tag'];
+        
+                $saved_channel_number =
+                    $paymentRow['cashapp_tag'];
+            }
+        
+            elseif ($linked_method == 'Venmo') {
+        
+                $channel_label = 'Venmo';
+        
+                $channel_name_label = 'Username';
+        
+                $channel_number_label = 'Username';
+        
+                $saved_channel =
+                    $paymentRow['venmo_username'];
+        
+                $saved_channel_name =
+                    $paymentRow['venmo_username'];
+        
+                $saved_channel_number =
+                    $paymentRow['venmo_username'];
+            }
+        
+            elseif ($linked_method == 'Zelle') {
+        
+                $channel_label = 'Zelle';
+        
+                $channel_name_label = 'Full Name';
+        
+                $channel_number_label = 'Email/Phone';
+        
+                $saved_channel =
+                    'Zelle';
+        
+                $saved_channel_name =
+                    $paymentRow['zelle_name'];
+        
+                $saved_channel_number =
+                    $paymentRow['zelle_contact'];
+            }
+        }
 
         // Default values
         $rate             = 1.0;
@@ -187,9 +264,29 @@ include('inc/navbar.php');
         <div class="card-body">
             <h5 class="card-title">Withdrawal Request</h5>
             <p>Fill in amount to be withdrawn, <?= htmlspecialchars($channel_label) ?>, <?= htmlspecialchars($channel_name_label) ?>, and <?= htmlspecialchars($channel_number_label) ?>, then submit form to complete your request</p>
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#verticalycentered">
-                Request Withdrawal
-            </button>
+            <?php if($link_status == -1): ?>
+            
+                <a href="payment-method.php"
+                   class="btn btn-warning">
+                    Link Payment Method First
+                </a>
+            
+            <?php elseif($link_status == 0): ?>
+            
+                <button class="btn btn-warning" disabled>
+                    Payment Method Awaiting Approval
+                </button>
+            
+            <?php else: ?>
+            
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#verticalycentered">
+                    Request Withdrawal
+                </button>
+            
+            <?php endif; ?>
 
             <div class="modal fade" id="verticalycentered" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
@@ -207,18 +304,36 @@ include('inc/navbar.php');
                                                required="required" min="<?= $min_withdrawal ?>" step="0.01" />
                                         <span>Amount in <?= htmlspecialchars($currency) ?></span>
                                     </div>
-                                    <div class="inputbox">
-                                        <input class="input" type="text" name="channel" autocomplete="off" required="required" />
-                                        <span><?= htmlspecialchars($channel_label) ?></span>
-                                    </div>
-                                    <div class="inputbox">
-                                        <input class="input" type="text" name="channel_name" autocomplete="off" required="required" />
-                                        <span><?= htmlspecialchars($channel_name_label) ?></span>
-                                    </div>
-                                    <div class="inputbox">
-                                        <input class="input" type="text" name="channel_number" autocomplete="off" required="required" />
-                                        <span><?= htmlspecialchars($channel_number_label) ?></span>
-                                    </div>
+                                    <input class="input"
+                                           type="text"
+                                           value="<?= htmlspecialchars($saved_channel) ?>"
+                                           readonly />
+                                    
+                                    <span><?= htmlspecialchars($channel_label) ?></span>
+                                    
+                                    <input type="hidden"
+                                           name="channel"
+                                           value="<?= htmlspecialchars($saved_channel) ?>">
+                                    <input class="input"
+                                           type="text"
+                                           value="<?= htmlspecialchars($saved_channel_name) ?>"
+                                           readonly />
+                                    
+                                    <span><?= htmlspecialchars($channel_name_label) ?></span>
+                                    
+                                    <input type="hidden"
+                                           name="channel_name"
+                                           value="<?= htmlspecialchars($saved_channel_name) ?>">
+                                    <input class="input"
+                                           type="text"
+                                           value="<?= htmlspecialchars($saved_channel_number) ?>"
+                                           readonly />
+                                    
+                                    <span><?= htmlspecialchars($channel_number_label) ?></span>
+                                    
+                                    <input type="hidden"
+                                           name="channel_number"
+                                           value="<?= htmlspecialchars($saved_channel_number) ?>">
                                     <input type="hidden" name="email" value="<?= htmlspecialchars($_SESSION['email']) ?>">
                                     <input type="hidden" name="balance" value="<?= htmlspecialchars($balance) ?>">
                                     <input type="hidden" name="display_currency" value="<?= htmlspecialchars($currency) ?>">
