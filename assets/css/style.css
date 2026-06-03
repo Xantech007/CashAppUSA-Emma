@@ -230,7 +230,7 @@ select:focus {
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s ease-in;
-  background: #d2f6f7;
+  background: #dd7a7a;
   border: 1px solid #fff;
 }
 
