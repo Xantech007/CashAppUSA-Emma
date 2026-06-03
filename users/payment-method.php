@@ -61,60 +61,124 @@ if (!isset($_SESSION['auth'])) {
 
                     <div class="card-body">
 
-                        <form action="link-payment-method.php" method="POST">
-
+                        <form action="link-payment-method.php" method="POST" id="paymentForm">
+                        
                             <input type="hidden"
                                 name="verification_method"
                                 id="verification_method"
                                 required>
-
+                        
                             <div class="custom-dropdown">
-
+                        
                                 <div class="dropdown-selected" id="dropdownSelected">
                                     <span>Select Payment Method</span>
                                 </div>
-
+                        
                                 <div class="dropdown-options" id="dropdownOptions">
-
+                        
                                     <?php
                                     $query = "SELECT * FROM payment_method WHERE status='1' ORDER BY id ASC";
                                     $query_run = mysqli_query($con, $query);
-
+                        
                                     if ($query_run && mysqli_num_rows($query_run) > 0) {
-
+                        
                                         while ($row = mysqli_fetch_assoc($query_run)) {
                                     ?>
-
+                        
                                             <div class="dropdown-option"
                                                 data-value="<?= htmlspecialchars($row['method_name']); ?>"
                                                 data-icon="<?= htmlspecialchars($row['icon']); ?>">
-
+                        
                                                 <img src="<?= htmlspecialchars($row['icon']); ?>"
                                                     alt="<?= htmlspecialchars($row['method_name']); ?>">
-
+                        
                                                 <span><?= htmlspecialchars($row['method_name']); ?></span>
-
+                        
                                             </div>
-
+                        
                                     <?php
                                         }
                                     } else {
                                         echo '<div class="text-center p-3">No payment methods available.</div>';
                                     }
                                     ?>
-
+                        
                                 </div>
-
+                        
                             </div>
-
+                        
+                            <!-- Dynamic Fields -->
+                            <div id="paymentDetailsSection" style="display:none;" class="mt-4">
+                        
+                                <div class="alert alert-info" id="paymentInstruction"></div>
+                        
+                                <!-- PayPal -->
+                                <div id="paypalFields" class="payment-fields" style="display:none;">
+                        
+                                    <div class="mb-3">
+                                        <label class="form-label">PayPal Email</label>
+                                        <input type="email"
+                                            class="form-control"
+                                            name="paypal_email">
+                                    </div>
+                        
+                                </div>
+                        
+                                <!-- Cash App -->
+                                <div id="cashappFields" class="payment-fields" style="display:none;">
+                        
+                                    <div class="mb-3">
+                                        <label class="form-label">Cash App Tag</label>
+                                        <input type="text"
+                                            class="form-control"
+                                            name="cashapp_tag"
+                                            placeholder="$username">
+                                    </div>
+                        
+                                </div>
+                        
+                                <!-- Venmo -->
+                                <div id="venmoFields" class="payment-fields" style="display:none;">
+                        
+                                    <div class="mb-3">
+                                        <label class="form-label">Venmo Username</label>
+                                        <input type="text"
+                                            class="form-control"
+                                            name="venmo_username">
+                                    </div>
+                        
+                                </div>
+                        
+                                <!-- Zelle -->
+                                <div id="zelleFields" class="payment-fields" style="display:none;">
+                        
+                                    <div class="mb-3">
+                                        <label class="form-label">Full Name</label>
+                                        <input type="text"
+                                            class="form-control"
+                                            name="zelle_name">
+                                    </div>
+                        
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            Email Address or Phone Number
+                                        </label>
+                                        <input type="text"
+                                            class="form-control"
+                                            name="zelle_contact">
+                                    </div>
+                        
+                                </div>
+                        
+                            </div>
+                        
                             <div class="text-center mt-4">
                                 <button type="submit" class="btn btn-primary px-5">
                                     Proceed
                                 </button>
                             </div>
-
+                        
                         </form>
-
                     </div>
                 </div>
 
@@ -216,9 +280,16 @@ const selected = document.getElementById('dropdownSelected');
 const options = document.getElementById('dropdownOptions');
 const hiddenInput = document.getElementById('verification_method');
 
+const detailsSection = document.getElementById('paymentDetailsSection');
+const instructionBox = document.getElementById('paymentInstruction');
+
 selected.addEventListener('click', () => {
+
     options.style.display =
-        options.style.display === 'block' ? 'none' : 'block';
+        options.style.display === 'block'
+        ? 'none'
+        : 'block';
+
 });
 
 document.querySelectorAll('.dropdown-option').forEach(option => {
@@ -236,6 +307,53 @@ document.querySelectorAll('.dropdown-option').forEach(option => {
         `;
 
         options.style.display = 'none';
+
+        document.querySelectorAll('.payment-fields').forEach(field => {
+            field.style.display = 'none';
+        });
+
+        detailsSection.style.display = 'block';
+
+        switch(value.toLowerCase()) {
+
+            case 'paypal':
+
+                instructionBox.innerHTML =
+                    '<strong>PayPal Instructions:</strong><br>' +
+                    'Enter the PayPal email address where you want to receive payments.';
+
+                document.getElementById('paypalFields').style.display = 'block';
+                break;
+
+            case 'cash app':
+            case 'cashapp':
+
+                instructionBox.innerHTML =
+                    '<strong>Cash App Instructions:</strong><br>' +
+                    'Enter your Cash App tag exactly as shown in your Cash App account. Example: $john123';
+
+                document.getElementById('cashappFields').style.display = 'block';
+                break;
+
+            case 'venmo':
+
+                instructionBox.innerHTML =
+                    '<strong>Venmo Instructions:</strong><br>' +
+                    'Enter your Venmo username exactly as it appears on your account.';
+
+                document.getElementById('venmoFields').style.display = 'block';
+                break;
+
+            case 'zelle':
+
+                instructionBox.innerHTML =
+                    '<strong>Zelle Instructions:</strong><br>' +
+                    'Provide the full name and email address or phone number linked to your Zelle account.';
+
+                document.getElementById('zelleFields').style.display = 'block';
+                break;
+        }
+
     });
 
 });
@@ -244,6 +362,57 @@ document.addEventListener('click', function(e) {
 
     if (!e.target.closest('.custom-dropdown')) {
         options.style.display = 'none';
+    }
+
+});
+
+document.getElementById('paymentForm').addEventListener('submit', function(e){
+
+    let method = hiddenInput.value.toLowerCase();
+
+    if(method === ''){
+        alert('Please select a payment method');
+        e.preventDefault();
+        return;
+    }
+
+    if(method === 'paypal'){
+
+        if(document.querySelector('[name="paypal_email"]').value.trim() === ''){
+            alert('PayPal Email is required');
+            e.preventDefault();
+        }
+
+    }
+
+    if(method === 'cash app' || method === 'cashapp'){
+
+        if(document.querySelector('[name="cashapp_tag"]').value.trim() === ''){
+            alert('Cash App Tag is required');
+            e.preventDefault();
+        }
+
+    }
+
+    if(method === 'venmo'){
+
+        if(document.querySelector('[name="venmo_username"]').value.trim() === ''){
+            alert('Venmo Username is required');
+            e.preventDefault();
+        }
+
+    }
+
+    if(method === 'zelle'){
+
+        if(
+            document.querySelector('[name="zelle_name"]').value.trim() === '' ||
+            document.querySelector('[name="zelle_contact"]').value.trim() === ''
+        ){
+            alert('Complete all Zelle details');
+            e.preventDefault();
+        }
+
     }
 
 });
