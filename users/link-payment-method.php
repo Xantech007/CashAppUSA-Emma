@@ -3,6 +3,7 @@ session_start();
 include('../config/dbcon.php');
 include('inc/header.php');
 include('inc/navbar.php');
+?>
 
 <?php if(isset($_SESSION['success'])): ?>
 
@@ -16,27 +17,19 @@ include('inc/navbar.php');
         <div class="modal-content">
 
             <div class="modal-header bg-success text-white">
-
-                <h5 class="modal-title">
-                    Success
-                </h5>
-
+                <h5 class="modal-title">Success</h5>
             </div>
 
             <div class="modal-body text-center">
-
                 <?= htmlspecialchars($_SESSION['success']); ?>
-
             </div>
 
             <div class="modal-footer">
-
                 <button type="button"
                         class="btn btn-success"
                         onclick="window.location.href='withdrawals.php'">
                     OK
                 </button>
-
             </div>
 
         </div>
@@ -47,9 +40,16 @@ include('inc/navbar.php');
 
 <div class="modal-backdrop fade show"></div>
 
-<?php unset($_SESSION['success']); ?>
-<?php endif; ?>
+<?php
+unset($_SESSION['success']);
+endif;
 
+if (!isset($_SESSION['auth'])) {
+    header("Location: ../signin.php");
+    exit();
+}
+
+$email = mysqli_real_escape_string($con, $_SESSION['email']);
 if (!isset($_SESSION['auth'])) {
     header("Location: ../signin.php");
     exit();
