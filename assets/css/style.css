@@ -39,11 +39,10 @@ Table of Css Content
 
 /* Root Variables for Theme Colors */
 :root {
-  --primary-color: #ff0000;
-  --secondary-color: #cc0000;
-
-  --gradient: linear-gradient(to bottom, #ff0000, #cc0000);
-  --gradient-reverse: linear-gradient(to top, #ff0000, #cc0000);
+  --primary-color: #000;
+  --secondary-color: #000;
+  --gradient: linear-gradient(to bottom, #cc0000, #ff0000);
+  --gradient-reverse: linear-gradient(to top, #cc0000, #ff0000);
 }
 
 /* Typography */
@@ -455,7 +454,7 @@ select:focus {
   padding: 185px 0px 185px;
   position: relative;
   overflow: hidden;
-  background-image: linear-gradient(rgba(0, 202, 224, 0.7), rgba(0, 180, 200, 0.7)), url(../images/bitcoin1.jpg);
+  background-image: linear-gradient(rgba(255, 0, 0, 0.7), rgba(204, 0, 0, 0.7)), url(../images/bitcoin1.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -656,7 +655,7 @@ select:focus {
   padding-top: 100px;
   overflow: hidden;
   position: relative;
-  background-image:linear-gradient(rgba(0, 202, 224, 0.7), rgba(0, 180, 200, 0.7)),url(../images/bitcoin3.jpg);
+  background-image:linear-gradient(rgba(255, 0, 0, 0.7), rgba(204, 0, 0, 0.7)),url(../images/bitcoin3.jpg);
   background-size:cover;
   background-repeat: no-repeat;
   background-position:center;
@@ -915,7 +914,7 @@ select:focus {
 .hero-area {
   position: relative;
   overflow: hidden;
-  background-image: linear-gradient(rgba(0, 202, 224, 0.7), rgba(0, 180, 200, 0.7)), url(../images/banner.jpg);
+  background-image: linear-gradient(rgba(255, 0, 0, 0.7), rgba(204, 0, 0, 0.7)), url(../images/banner.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
