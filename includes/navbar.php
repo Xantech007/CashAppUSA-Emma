@@ -46,16 +46,16 @@
 							<?php
 							if(isset($_SESSION['admin']))
 							{ ?>
-								<a href="admin/signin" class="base-btn2"style="background: linear-gradient(to bottom, #008ee0, #00cae0);"> Admin</a>							
+								<a href="admin/signin" class="base-btn2"style="background: linear-gradient(to bottom, #ff0000, #cc0000);"> Admin</a>							
 						  <?php	}						
 						
 							else if(isset($_SESSION['auth']))
 							{ ?>
-								<a href="signin" class="base-btn2"style="background: linear-gradient(to bottom, #008ee0, #00cae0);"> Dashboard</a>							
+								<a href="signin" class="base-btn2"style="background: linear-gradient(to bottom, #ff0000, #cc0000);"> Dashboard</a>							
 						  <?php	}
 						  else
 						  { ?>
-						  <a href="signin" class="base-btn2"style="background: linear-gradient(to bottom, #008ee0, #00cae0);"> Login</a>
+						  <a href="signin" class="base-btn2"style="background: linear-gradient(to bottom, #ff0000, #cc0000);"> Login</a>
 						 <?php }
 							?>
 							
