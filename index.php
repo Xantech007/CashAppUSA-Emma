@@ -12,10 +12,10 @@ include('includes/navbar.php');
                 <div class="left-content" style="width:100%">
                     <div class="content">
                         <h1 class="title">
-                            Scan CashTags to Claim and Withdraw Rewards
+                            Scan TeslaTags to Claim and Withdraw Rewards
                         </h1>
                         <p class="text">
-                            Unlock exciting rewards and withdraw cash instantly by scanning CashTags with our secure platform.
+                            Unlock exciting rewards and withdraw cash instantly by scanning TeslaTags with our secure platform.
                         </p>
                         <?php
                         if(isset($_SESSION['admin']))
@@ -57,7 +57,7 @@ include('includes/navbar.php');
                                 Total Users
                             </h6>
                             <p>
-                                Join our growing community of users scanning CashTags to claim rewards.
+                                Join our growing community of users scanning TeslaTags to claim rewards.
                             </p>
                         </div>
                     </div>
@@ -75,7 +75,7 @@ include('includes/navbar.php');
                                 Total Rewards Claimed
                             </h6>
                             <p>
-                                Users have claimed thousands in rewards by scanning CashTags.
+                                Users have claimed thousands in rewards by scanning TeslaTags.
                             </p>
                         </div>
                     </div>
@@ -114,7 +114,7 @@ include('includes/navbar.php');
                         About Us
                     </h2>
                     <p class="text">
-                        We provide a seamless platform to scan CashTags, claim rewards, and withdraw funds effortlessly using cutting-edge technology.
+                        We provide a seamless platform to scan TeslaTags, claim rewards, and withdraw funds effortlessly using cutting-edge technology.
                     </p>
                 </div>
             </div>
@@ -132,7 +132,7 @@ include('includes/navbar.php');
                             The Easiest Way to Claim Rewards
                         </h4>
                         <p class="text">
-                            Scan CashTags to unlock rewards and withdraw funds instantly with our user-friendly platform.
+                            Scan TeslaTags to unlock rewards and withdraw funds instantly with our user-friendly platform.
                         </p>
                     </div>
                     <ul class="about-list with-icon">
@@ -158,10 +158,10 @@ include('includes/navbar.php');
                                 </div>
                                 <div class="inner-content">
                                     <h4 class="title">
-                                        Easy CashTag Scanning
+                                        Easy TeslaTag Scanning
                                     </h4>
                                     <p>
-                                        Scan CashTags to claim rewards in just a few clicks.
+                                        Scan TeslaTags to claim rewards in just a few clicks.
                                     </p>
                                 </div>
                             </div>
@@ -199,7 +199,7 @@ include('includes/navbar.php');
                         How It Works
                     </h2>
                     <p class="text">
-                        Our platform makes it simple to scan CashTags, claim rewards, and withdraw funds in just a few steps.
+                        Our platform makes it simple to scan TeslaTags, claim rewards, and withdraw funds in just a few steps.
                     </p>
                 </div>
             </div>
@@ -215,7 +215,7 @@ include('includes/navbar.php');
                             Create Account
                         </h4>
                         <p>
-                            Sign up to start scanning CashTags and claiming rewards.
+                            Sign up to start scanning TeslaTags and claiming rewards.
                         </p>
                     </div>
                 </div>
@@ -227,10 +227,10 @@ include('includes/navbar.php');
                     </div>
                     <div class="content">
                         <h4 class="title">
-                            Scan CashTags
+                            Scan TeslaTags
                         </h4>
                         <p>
-                            Use our platform to scan CashTags and unlock exciting rewards.
+                            Use our platform to scan TeslaTags and unlock exciting rewards.
                         </p>
                     </div>
                 </div>
@@ -265,7 +265,7 @@ include('includes/navbar.php');
                         Why Choose Us
                     </h2>
                     <p class="text">
-                        Our platform offers a fast, secure, and easy way to claim and withdraw rewards using CashTags.
+                        Our platform offers a fast, secure, and easy way to claim and withdraw rewards using TeslaTags.
                     </p>
                 </div>
             </div>
@@ -329,7 +329,7 @@ include('includes/navbar.php');
                                             Instant Rewards
                                         </h4>
                                         <p class="text">
-                                            Scan CashTags to claim rewards quickly and easily. Our platform ensures you get your rewards without delay.
+                                            Scan TeslaTags to claim rewards quickly and easily. Our platform ensures you get your rewards without delay.
                                         </p>
                                     </div>
                                 </div>
@@ -447,7 +447,7 @@ include('includes/navbar.php');
                         Supporting Our Elderly & Handicapped Community
                     </h2>
                     <p class="text">
-                        We are proud to support elderly and handicapped individuals across the USA by providing accessible financial services through our CashTag platform.
+                        We are proud to support elderly and handicapped individuals across the USA by providing accessible financial services through our TeslaTag platform.
                     </p>
                 </div>
             </div>
@@ -644,7 +644,7 @@ include('includes/navbar.php');
                             </div>
                             <div class="content">
                                 <p>
-                                    Scanning CashTags to claim rewards was so easy, and I withdrew my funds instantly!
+                                    Scanning TeslaTags to claim rewards was so easy, and I withdrew my funds instantly!
                                 </p>
                             </div>
                             <div class="reviewr">
@@ -702,7 +702,7 @@ include('includes/navbar.php');
                             </div>
                             <div class="content">
                                 <p>
-                                    I've claimed multiple rewards using CashTags, and every withdrawal was smooth and quick.
+                                    I've claimed multiple rewards using TeslaTags, and every withdrawal was smooth and quick.
                                 </p>
                             </div>
                             <div class="reviewr">
@@ -767,7 +767,7 @@ include('includes/navbar.php');
                         Questions
                     </h2>
                     <p class="text">
-                        Common questions about scanning CashTags and withdrawing rewards.
+                        Common questions about scanning TeslaTags and withdrawing rewards.
                     </p>
                 </div>
             </div>
@@ -840,7 +840,7 @@ include('includes/navbar.php');
                         Get in Touch
                     </h2>
                     <p class="text">
-                        Contact us for any questions about scanning CashTags or withdrawing rewards.
+                        Contact us for any questions about scanning TeslaTags or withdrawing rewards.
                     </p>
                 </div>
             </div>
