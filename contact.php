@@ -42,7 +42,7 @@ include('includes/navbar.php');
                         Get in Touch
                     </h2>
                     <p class="text">
-                        Have questions about scanning CashTags or withdrawing your rewards? Contact us, and our team will assist you promptly.
+                        Have questions about scanning TeslaTags or withdrawing your rewards? Contact us, and our team will assist you promptly.
                     </p>
                 </div>
             </div>
