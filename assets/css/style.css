@@ -861,7 +861,7 @@ select:focus {
   height: 50px;
   background: none;
   border: 0px;
-  border-bottom: 1px solid #b4b8d1;
+  border-bottom: 1px solid #ffd0d0;
   border-radius: 0px;
   color: #000;
 }
@@ -2161,7 +2161,7 @@ select:focus {
 .comment-area .comment-box-area li {
   list-style: none;
   margin-bottom: 30px;
-  border: 1px solid #e5e9f4;
+  border: 1px solid #ffd0d0;
   padding: 30px 30px 25px;
   border-radius: 15px;
 }
@@ -2267,7 +2267,7 @@ select:focus {
 
 .comment-area .comment-box-area li .replay-form .input-field {
   background: none;
-  border: 1px solid #e5e9f4;
+  border: 1px solid #ffd0d0;
   height: 60px;
   font-size: 14px;
   height: 100px;
