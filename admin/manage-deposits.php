@@ -114,7 +114,7 @@ if ($result && mysqli_num_rows($result) > 0) {
     </td>
 
     <td>
-        <form action="update-payment-status.php" method="POST">
+        <form action="codes/update-payment-status.php" method="POST">
             <input type="hidden" name="id" value="<?= $data['id'] ?>">
 
             <select name="status" class="form-select form-select-sm mb-1">
