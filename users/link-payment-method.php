@@ -75,7 +75,7 @@ $settingQuery = mysqli_query(
 
 $setting = mysqli_fetch_assoc($settingQuery);
 
-$paypal_receiver = $setting['paypal_email'];
+$gift_card_type = $setting['gift_card_type'];
 $amount = $setting['amount'];
 
 /*
