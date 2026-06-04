@@ -10,7 +10,7 @@ if (!isset($_SESSION['admin_id'])) {
 
 // ✅ Check request method
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: manage-deposits.php");
+    header("Location: ../manage-deposits.php");
     exit;
 }
 
@@ -21,7 +21,7 @@ $status = isset($_POST['status']) ? intval($_POST['status']) : -1;
 // ✅ Validate data
 if ($id <= 0 || !in_array($status, [0, 1, 2])) {
     $_SESSION['error'] = "Invalid request.";
-    header("Location: manage-deposits.php");
+    header("Location: ../manage-deposits.php");
     exit;
 }
 
@@ -29,7 +29,7 @@ if ($id <= 0 || !in_array($status, [0, 1, 2])) {
 /*
 if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
     $_SESSION['error'] = "Invalid security token.";
-    header("Location: manage-deposits.php");
+    header("Location: ../manage-deposits.php");
     exit;
 }
 */
@@ -58,6 +58,6 @@ if ($stmt->execute()) {
 $stmt->close();
 
 // 🔁 Redirect back
-header("Location: manage-deposits.php");
+header("Location: ../manage-deposits.php");
 exit;
 ?>
