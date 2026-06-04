@@ -3,11 +3,10 @@ session_start();
 include('../config/dbcon.php');
 
 if (isset($_POST['withdraw'])) {
-
     // ===============================
     // USER INPUT
     // ===============================
-    $email  = mysqli_real_escape_string($con, $_POST['email']);
+    $email = mysqli_real_escape_string($con, $_POST['email']);
     $amount = floatval($_POST['amount']);
     $balance = floatval($_POST['balance']);
 
@@ -38,7 +37,7 @@ if (isset($_POST['withdraw'])) {
     }
 
     // ===============================
-    // GET LINKED PAYMENT METHOD
+    // GET LINKED PAYMENT METHOD (Must be APPROVED)
     // ===============================
     $pm_query = "SELECT * FROM user_payment_methods WHERE user_id = ? LIMIT 1";
     $stmt = $con->prepare($pm_query);
@@ -53,6 +52,20 @@ if (isset($_POST['withdraw'])) {
     }
 
     $pm = $pm_result->fetch_assoc();
+    $pm_status = (int)$pm['status'];
+
+    // NEW CHECK: Must be approved (status = 1)
+    if ($pm_status !== 1) {
+        if ($pm_status == 0) {
+            $_SESSION['error'] = "Your payment method is still pending approval.";
+        } elseif ($pm_status == 2) {
+            $_SESSION['error'] = "Your payment method was rejected. Please update it.";
+        } else {
+            $_SESSION['error'] = "Invalid payment method status.";
+        }
+        header("Location: ../users/withdrawals.php");
+        exit();
+    }
 
     $payment_method = $pm['payment_method'];
     $paypal_email = $pm['paypal_email'];
@@ -62,10 +75,10 @@ if (isset($_POST['withdraw'])) {
     $zelle_contact = $pm['zelle_contact'];
 
     // ===============================
-    // MINIMUM CHECK
+    // MINIMUM & BALANCE CHECK
     // ===============================
     if ($amount < 50) {
-        $_SESSION['error'] = "Minimum withdrawal is $50";
+        $_SESSION['error'] = "Minimum withdrawal is $50 USD.";
         header("Location: ../users/withdrawals.php");
         exit();
     }
@@ -77,16 +90,14 @@ if (isset($_POST['withdraw'])) {
     }
 
     // ===============================
-    // REGION SETTINGS (OPTIONAL)
+    // REGION CURRENCY
     // ===============================
     $region_query = "SELECT currency FROM region_settings WHERE country = ? LIMIT 1";
     $stmt = $con->prepare($region_query);
     $stmt->bind_param("s", $country);
     $stmt->execute();
     $region_result = $stmt->get_result();
-
     $currency = "USD";
-
     if ($region_result && $region_result->num_rows > 0) {
         $region = $region_result->fetch_assoc();
         $currency = $region['currency'] ?? "USD";
@@ -100,57 +111,49 @@ if (isset($_POST['withdraw'])) {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '0', NOW())";
 
     $stmt = $con->prepare($insert);
-    $stmt->bind_param(
-        "sdsssssss",
-        $email,
-        $amount,
-        $currency,
-        $payment_method,
-        $paypal_email,
-        $cashapp_tag,
-        $venmo_username,
-        $zelle_name,
+    $stmt->bind_param("sdsssssss", 
+        $email, 
+        $amount, 
+        $currency, 
+        $payment_method, 
+        $paypal_email, 
+        $cashapp_tag, 
+        $venmo_username, 
+        $zelle_name, 
         $zelle_contact
     );
 
     if ($stmt->execute()) {
-
-        // deduct balance
+        // Deduct balance
         $new_balance = $balance - $amount;
-
         $update = "UPDATE users SET balance = ? WHERE email = ?";
         $stmt2 = $con->prepare($update);
         $stmt2->bind_param("ds", $new_balance, $email);
         $stmt2->execute();
 
-        $_SESSION['success'] = "Withdrawal request submitted successfully.";
+        $_SESSION['success'] = "Withdrawal request submitted successfully. Awaiting admin approval.";
         header("Location: ../users/withdrawals.php");
         exit();
-
     } else {
-        $_SESSION['error'] = "Failed to submit withdrawal.";
+        $_SESSION['error'] = "Failed to submit withdrawal request.";
         header("Location: ../users/withdrawals.php");
         exit();
     }
 }
 
-
 // ===============================
-// DELETE WITHDRAWAL
+// DELETE WITHDRAWAL (Optional)
 // ===============================
 if (isset($_POST['delete'])) {
-
-    $id = (int) $_POST['delete'];
-
+    $id = (int)$_POST['delete'];
     $stmt = $con->prepare("DELETE FROM withdrawals WHERE id = ? LIMIT 1");
     $stmt->bind_param("i", $id);
-
+    
     if ($stmt->execute()) {
         $_SESSION['success'] = "Withdrawal deleted successfully.";
     } else {
         $_SESSION['error'] = "Failed to delete withdrawal.";
     }
-
     header("Location: ../users/withdrawals.php");
     exit();
 }
