@@ -11,63 +11,66 @@ if (!isset($_SESSION['auth'])) {
 }
 
 $email = $_SESSION['email'] ?? null;
-
-$name            = 'Guest';
-$balance         = 0.00;
-$display_amount  = "0.00";
-$currency_symbol = "$";           // default fallback
+$name = 'Guest';
+$balance = 0.00;
+$display_amount = "0.00";
+$currency_symbol = "$";           // Default fallback
 $convert_currency = 0;
 $special_rate_applied = false;
+$user_country = null;
 
 if ($email) {
-    // Get user data: name, balance, convert_currency, country
+    // Get user data
     $user_query = "SELECT name, balance, convert_currency, country 
-                   FROM users 
-                   WHERE email = ?";
+                   FROM users WHERE email = ?";
     $stmt = $con->prepare($user_query);
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $user_result = $stmt->get_result();
 
     if ($user_result && $user_result->num_rows > 0) {
-        $user_data         = $user_result->fetch_assoc();
-        $name              = $user_data['name'] ?? 'Guest';
-        $balance           = (float)($user_data['balance'] ?? 0.00);
-        $convert_currency  = (int)($user_data['convert_currency'] ?? 0);
-        $user_country      = $user_data['country'] ?? null;
+        $user_data = $user_result->fetch_assoc();
+        $name = $user_data['name'] ?? 'Guest';
+        $balance = (float)($user_data['balance'] ?? 0.00);
+        $convert_currency = (int)($user_data['convert_currency'] ?? 0);
+        $user_country = $user_data['country'] ?? null;
 
-        // Apply conversion only when convert_currency = 1
-        if ($convert_currency === 1 && $user_country) {
+        // === Fetch Currency Symbol & Rate from region_settings ===
+        if ($user_country) {
             $region_query = "SELECT rate, currency 
                              FROM region_settings 
-                             WHERE country = ? 
-                             LIMIT 1";
+                             WHERE country = ? LIMIT 1";
             $region_stmt = $con->prepare($region_query);
             $region_stmt->bind_param("s", $user_country);
             $region_stmt->execute();
             $region_result = $region_stmt->get_result();
 
             if ($region_result && $region_row = $region_result->fetch_assoc()) {
-                $rate            = (float)($region_row['rate'] ?? 1.0);
                 $currency_symbol = $region_row['currency'] ?: '$';
-                $calculated      = $balance * $rate;
-                $display_amount  = number_format($calculated, 2, '.', $calculated >= 1000 ? ',' : '');
-                $special_rate_applied = true;
+                $rate = (float)($region_row['rate'] ?? 1.0);
+
+                // Apply conversion only if enabled
+                if ($convert_currency === 1) {
+                    $calculated = $balance * $rate;
+                    $display_amount = number_format($calculated, 2, '.', $calculated >= 1000 ? ',' : '');
+                    $special_rate_applied = true;
+                } else {
+                    $display_amount = number_format($balance, 2, '.', $balance >= 1000 ? ',' : '');
+                }
             } else {
-                // Region not found → fallback to original
-                $display_amount  = number_format($balance, 2, '.', $balance >= 1000 ? ',' : '');
-                $currency_symbol = "$";
+                // Country not found in region_settings → fallback
+                $display_amount = number_format($balance, 2, '.', $balance >= 1000 ? ',' : '');
             }
             $region_stmt->close();
         } else {
-            // Default: no conversion
+            // No country set
             $display_amount = number_format($balance, 2, '.', $balance >= 1000 ? ',' : '');
         }
     }
     $stmt->close();
 }
 
-// Fetch enabled CashTags for dashboard
+// Fetch enabled CashTags
 $cashtag_query = "SELECT cashtag FROM packages WHERE dashboard = 'enabled' ORDER BY cashtag";
 $cashtag_result = mysqli_query($con, $cashtag_query);
 $cashtags = [];
