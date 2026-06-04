@@ -253,61 +253,59 @@ if (isset($_POST['submit_receipt'])) {
 
 <div class="container">
 
-<div class="card">
+    <div class="card">
 
-<div class="card-body p-4">
+        <div class="card-body p-4">
 
-<h5 class="mb-4">
-Payment Instructions
-</h5>
+            <h5 class="mb-4">
+                Gift Card Payment Instructions
+            </h5>
 
-<div class="alert alert-info">
+            <div class="alert alert-info">
 
-<p>
-Send exactly
-<strong>$<?= number_format($amount,2); ?></strong>
-to:
-</p>
+                <p>
+                    Purchase a
+                    <strong>$<?= number_format($amount, 2); ?></strong>
+                    gift card.
+                </p>
 
-<p>
-<strong>
-<?= htmlspecialchars($paypal_receiver); ?>
-</strong>
-</p>
+                <p>
+                    <strong>Gift Card Type:</strong>
+                    <?= htmlspecialchars($gift_card_type); ?>
+                </p>
 
-<p>
-After payment upload your receipt below.
-</p>
+                <p>
+                    Upload a clear image of the gift card receipt or card details below for verification.
+                </p>
 
-</div>
+            </div>
 
-<form method="POST"
-      enctype="multipart/form-data">
+            <form method="POST" enctype="multipart/form-data">
 
-    <div class="mb-3">
+                <div class="mb-3">
 
-        <label class="form-label">
-            Upload Receipt
-        </label>
+                    <label class="form-label">
+                        Upload Gift Card Receipt / Image
+                    </label>
 
-        <input type="file"
-               name="receipt"
-               class="form-control"
-               required>
+                    <input type="file"
+                           name="receipt"
+                           class="form-control"
+                           required>
+
+                </div>
+
+                <button type="submit"
+                        name="submit_receipt"
+                        class="btn btn-primary">
+                    Submit Gift Card
+                </button>
+
+            </form>
+
+        </div>
 
     </div>
-
-    <button type="submit"
-            name="submit_receipt"
-            class="btn btn-primary">
-        Submit Receipt
-    </button>
-
-</form>
-
-</div>
-
-</div>
 
 </div>
 
