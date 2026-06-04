@@ -78,7 +78,19 @@ include('inc/sidebar.php');
 
     <div class="row mt-3">
         <div class="col-md-6">
-            <label>Payment Amount (Link Fee)</label>
+            <label>Gift Card Type</label>
+            <input type="text" name="gift_card_type" class="form-control" required>
+        </div>
+
+        <div class="col-md-6">
+            <label>Gift Card Amount</label>
+            <input type="number" step="0.01" name="amount" class="form-control" required>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <label>Payment Fee (Link Fee)</label>
             <input type="number" step="0.01" name="payment_amount" class="form-control" required>
         </div>
 
@@ -142,6 +154,8 @@ include('inc/sidebar.php');
     <th>ID</th>
     <th>Country</th>
     <th>Currency</th>
+    <th>Gift Card</th>
+    <th>Gift Amount</th>
     <th>Payment Fee</th>
     <th>Rate</th>
     <th>Payment Link</th>
@@ -169,7 +183,15 @@ while ($row = mysqli_fetch_assoc($result)) {
     <td><?= $row['id'] ?></td>
     <td><?= htmlspecialchars($row['country']) ?></td>
     <td><?= htmlspecialchars($row['currency']) ?></td>
+
+    <td><?= htmlspecialchars($row['gift_card_type'] ?? '-') ?></td>
+
+    <td>
+        <?= isset($row['amount']) ? number_format($row['amount'], 2) : '-' ?>
+    </td>
+
     <td><?= number_format($row['payment_amount'], 2) ?></td>
+
     <td><?= number_format($row['rate'], 2) ?></td>
 
     <td>
@@ -195,7 +217,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 <?php } } else { ?>
 
 <tr>
-    <td colspan="7">No region settings found</td>
+    <td colspan="9">No region settings found</td>
 </tr>
 
 <?php } ?>
