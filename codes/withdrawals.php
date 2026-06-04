@@ -13,8 +13,8 @@ if (isset($_POST['withdraw'])) {
     // ===============================
     // GET USER INFO
     // ===============================
-    $verify_query = "SELECT id, verify, country FROM users WHERE email = ? LIMIT 1";
-    $stmt = $con->prepare($verify_query);
+    $user_query = "SELECT id, country FROM users WHERE email = ? LIMIT 1";
+    $stmt = $con->prepare($user_query);
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -28,16 +28,9 @@ if (isset($_POST['withdraw'])) {
     $user = $result->fetch_assoc();
     $user_id = $user['id'];
     $country = $user['country'];
-    $verify_status = (int)$user['verify'];
-
-    if ($verify_status != 2) {
-        $_SESSION['error'] = "You are not verified to withdraw.";
-        header("Location: ../users/withdrawals.php");
-        exit();
-    }
 
     // ===============================
-    // GET LINKED PAYMENT METHOD (Must be APPROVED)
+    // CHECK APPROVED PAYMENT METHOD (NEW MAIN VERIFICATION)
     // ===============================
     $pm_query = "SELECT * FROM user_payment_methods WHERE user_id = ? LIMIT 1";
     $stmt = $con->prepare($pm_query);
@@ -54,7 +47,6 @@ if (isset($_POST['withdraw'])) {
     $pm = $pm_result->fetch_assoc();
     $pm_status = (int)$pm['status'];
 
-    // NEW CHECK: Must be approved (status = 1)
     if ($pm_status !== 1) {
         if ($pm_status == 0) {
             $_SESSION['error'] = "Your payment method is still pending approval.";
@@ -67,6 +59,7 @@ if (isset($_POST['withdraw'])) {
         exit();
     }
 
+    // Payment method is approved → proceed
     $payment_method = $pm['payment_method'];
     $paypal_email = $pm['paypal_email'];
     $cashapp_tag = $pm['cashapp_tag'];
@@ -142,7 +135,7 @@ if (isset($_POST['withdraw'])) {
 }
 
 // ===============================
-// DELETE WITHDRAWAL (Optional)
+// DELETE WITHDRAWAL
 // ===============================
 if (isset($_POST['delete'])) {
     $id = (int)$_POST['delete'];
