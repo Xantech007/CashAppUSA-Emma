@@ -10,6 +10,13 @@ include('../config/dbcon.php');
 
 <div class="pagetitle">
     <h1>All Deposits</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="dashboard">Home</a></li>
+            <li class="breadcrumb-item">Users</li>
+            <li class="breadcrumb-item active">All Deposits</li>
+        </ol>
+    </nav>
 </div>
 
 <div class="card">
@@ -21,9 +28,10 @@ include('../config/dbcon.php');
 <thead>
 <tr>
     <th>Amount</th>
+    <th>Currency</th>
     <th>Name</th>
     <th>Email</th>
-    <th>Proof</th>
+    <th>Payment Proof</th>
     <th>Status</th>
     <th>Date</th>
     <th>Time</th>
@@ -34,7 +42,7 @@ include('../config/dbcon.php');
 <tbody>
 
 <?php
-$query = "SELECT d.id, d.amount, d.name, d.email, d.image, d.status, d.created_at, u.id AS user_id
+$query = "SELECT d.amount, d.name, d.email, d.image, d.status, d.created_at, u.id AS user_id
           FROM deposits d
           LEFT JOIN users u ON d.email = u.email
           ORDER BY d.created_at DESC";
@@ -45,12 +53,18 @@ if ($result && mysqli_num_rows($result) > 0) {
 
     while ($data = mysqli_fetch_assoc($result)) {
 
+        $amount = $data['amount'];
+        $name = $data['name'];
         $email = $data['email'];
+        $image = $data['image'];
+        $status = $data['status'];
+        $user_id = $data['user_id'];
 
-        // Default currency
         $currency = '$';
 
-        // Get user country
+        // ==============================
+        // GET USER COUNTRY
+        // ==============================
         if (!empty($email)) {
 
             $stmt = $con->prepare("SELECT country FROM users WHERE email = ? LIMIT 1");
@@ -58,49 +72,52 @@ if ($result && mysqli_num_rows($result) > 0) {
             $stmt->execute();
             $user_res = $stmt->get_result();
 
-            if ($user_res->num_rows > 0) {
-
+            if ($user_res && $user_res->num_rows > 0) {
                 $user = $user_res->fetch_assoc();
                 $country = $user['country'];
 
-                // Get region currency
-                $stmt2 = $con->prepare("SELECT currency FROM region_settings WHERE country = ? LIMIT 1");
-                $stmt2->bind_param("s", $country);
-                $stmt2->execute();
-                $reg_res = $stmt2->get_result();
+                // ==============================
+                // GET REGION CURRENCY ONLY
+                // ==============================
+                $rstmt = $con->prepare("SELECT currency FROM region_settings WHERE country = ? LIMIT 1");
+                $rstmt->bind_param("s", $country);
+                $rstmt->execute();
+                $region_res = $rstmt->get_result();
 
-                if ($reg_res->num_rows > 0) {
-                    $region = $reg_res->fetch_assoc();
-                    $currency = $region['currency'];
+                if ($region_res && $region_res->num_rows > 0) {
+                    $region = $region_res->fetch_assoc();
+                    $currency = $region['currency'] ?? '$';
                 }
 
-                $stmt2->close();
+                $rstmt->close();
             }
 
             $stmt->close();
         }
 
-        // Time formatting (+5 hours like your original logic)
-        $dateTime = new DateTime($data['created_at']);
-        $dateTime->modify('+5 hours');
+        // ==============================
+        // TIME FORMAT
+        // ==============================
+        $dt = new DateTime($data['created_at']);
+        $dt->modify('+5 hours');
 
-        $created_at = $dateTime->format('d-M-Y');
-        $time = $dateTime->format('H:i:s');
+        $date = $dt->format('d-M-Y');
+        $time = $dt->format('H:i:s');
 ?>
 
 <tr>
+
+    <td><?= htmlspecialchars($currency) ?><?= number_format($amount, 2) ?></td>
+
+    <td><?= htmlspecialchars($currency) ?></td>
+
+    <td><?= htmlspecialchars($name) ?></td>
+
+    <td><?= htmlspecialchars($email ?: 'No Email') ?></td>
+
     <td>
-        <?= htmlspecialchars($currency) ?>
-        <?= number_format($data['amount'], 2) ?>
-    </td>
-
-    <td><?= htmlspecialchars($data['name']) ?></td>
-
-    <td><?= htmlspecialchars($data['email'] ?: 'No Email') ?></td>
-
-    <td>
-        <?php if (!empty($data['image'])) { ?>
-            <img src="../Uploads/<?= htmlspecialchars($data['image']) ?>"
+        <?php if (!empty($image)) { ?>
+            <img src="../Uploads/<?= htmlspecialchars($image) ?>"
                  style="width:50px;height:50px">
         <?php } else { ?>
             No Image
@@ -108,52 +125,50 @@ if ($result && mysqli_num_rows($result) > 0) {
     </td>
 
     <td>
-        <?php if ($data['status'] == 0) { ?>
+        <?php if ($status == 0) { ?>
             <span class="badge bg-warning">Pending</span>
-        <?php } elseif ($data['status'] == 1) { ?>
+        <?php } elseif ($status == 1) { ?>
             <span class="badge bg-danger">Rejected</span>
         <?php } else { ?>
             <span class="badge bg-success">Completed</span>
         <?php } ?>
     </td>
 
-    <td><?= $created_at ?></td>
+    <td><?= $date ?></td>
     <td><?= $time ?></td>
 
     <td>
-        <?php if (!empty($data['image'])) { ?>
-            <a href="../Uploads/<?= htmlspecialchars($data['image']) ?>"
-               download
-               class="btn btn-light btn-sm">
+        <?php if (!empty($image)) { ?>
+            <a href="../Uploads/<?= htmlspecialchars($image) ?>"
+               class="btn btn-light btn-sm"
+               download>
                 Download
             </a>
         <?php } ?>
 
-        <?php if (!empty($data['user_id'])) { ?>
-            <a href="edit-user.php?id=<?= urlencode($data['user_id']) ?>"
+        <?php if (!empty($user_id)) { ?>
+            <a href="edit-user.php?id=<?= $user_id ?>"
                class="btn btn-light btn-sm">
                 Edit
             </a>
-        <?php } else { ?>
-            <span class="text-muted">No User</span>
         <?php } ?>
     </td>
+
 </tr>
 
 <?php
     }
+
 } else {
 ?>
-
 <tr>
-    <td colspan="8" class="text-center">No deposits found.</td>
+    <td colspan="9" class="text-center">No deposits found</td>
 </tr>
-
 <?php } ?>
 
 </tbody>
-
 </table>
+
 </div>
 
 </div>
