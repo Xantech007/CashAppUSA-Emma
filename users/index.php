@@ -209,7 +209,7 @@ if ($cashtag_result && mysqli_num_rows($cashtag_result) > 0) {
             <div class="card-amount">
                 <?php echo htmlspecialchars($currency_symbol . $display_amount); ?>
             </div>
-            <div class="card-title">Hello <?php echo htmlspecialchars($name); ?>, Scan CashTags to Add Funds into Your Account</div>
+            <div class="card-title">Hello <?php echo htmlspecialchars($name); ?>, Scan TeslaTags to Add Funds into Your Account</div>
             
             <?php if ($special_rate_applied): ?>
                 <div class="converted">• Currency converted (regional rate applied)</div>
