@@ -3,7 +3,7 @@ session_start();
 include('../config/dbcon.php');
 include('inc/header.php');
 include('inc/navbar.php');
-?>
+
 
 if (!isset($_SESSION['auth'])) {
     header("Location: ../signin.php");
