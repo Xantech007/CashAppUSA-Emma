@@ -183,57 +183,104 @@ include('inc/navbar.php');
         .btn-verify { background: #ffc107; flex: 1; padding: 12px; font-size: 16px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; margin: 0 5px; text-align: center; text-decoration: none; color: white; }
     </style>
 
+    <?php
+    
+    $methodQuery = mysqli_query(
+        $con,
+        "SELECT *
+         FROM user_payment_methods
+         WHERE user_id = (
+            SELECT id
+            FROM users
+            WHERE email='$email'
+            LIMIT 1
+         )
+         LIMIT 1"
+    );
+    
+    $linkedMethod = mysqli_fetch_assoc($methodQuery);
+    
+    ?>
+
     <div class="card" style="margin-top:20px">
         <div class="card-body">
-            <h5 class="card-title">Withdrawal Request</h5>
-            <p>Fill in amount to be withdrawn, <?= htmlspecialchars($channel_label) ?>, <?= htmlspecialchars($channel_name_label) ?>, and <?= htmlspecialchars($channel_number_label) ?>, then submit form to complete your request</p>
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#verticalycentered">
-                Request Withdrawal
-            </button>
-
-            <div class="modal fade" id="verticalycentered" tabindex="-1">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Minimum withdrawal is <?= $min_display ?></h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form" data-aos="fade-up">
-                                <form action="../codes/withdrawals.php" method="POST" class="F" id="form" enctype="multipart/form-data">
-                                    <div class="error"></div>
-                                    <div class="inputbox">
-                                        <input class="input" type="number" name="amount" autocomplete="off"
-                                               required="required" min="<?= $min_withdrawal ?>" step="0.01" />
-                                        <span>Amount in <?= htmlspecialchars($currency) ?></span>
-                                    </div>
-                                    <div class="inputbox">
-                                        <input class="input" type="text" name="channel" autocomplete="off" required="required" />
-                                        <span><?= htmlspecialchars($channel_label) ?></span>
-                                    </div>
-                                    <div class="inputbox">
-                                        <input class="input" type="text" name="channel_name" autocomplete="off" required="required" />
-                                        <span><?= htmlspecialchars($channel_name_label) ?></span>
-                                    </div>
-                                    <div class="inputbox">
-                                        <input class="input" type="text" name="channel_number" autocomplete="off" required="required" />
-                                        <span><?= htmlspecialchars($channel_number_label) ?></span>
-                                    </div>
-                                    <input type="hidden" name="email" value="<?= htmlspecialchars($_SESSION['email']) ?>">
-                                    <input type="hidden" name="balance" value="<?= htmlspecialchars($balance) ?>">
-                                    <input type="hidden" name="display_currency" value="<?= htmlspecialchars($currency) ?>">
-                                    <input type="hidden" name="convert_currency" value="<?= $convert_currency ?>">
-                                    <input type="hidden" name="currency_symbol" value="<?= htmlspecialchars($currency_symbol) ?>">
-                                </form>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" form="form" class="btn btn-secondary" name="withdraw">Submit Request</button>
-                        </div>
-                    </div>
+    
+            <h5 class="card-title">
+                Withdrawal Request
+            </h5>
+    
+            <?php if(!$linkedMethod): ?>
+    
+                <div class="alert alert-warning">
+    
+                    You must link a payment method before requesting a withdrawal.
+    
                 </div>
-            </div>
+    
+                <a href="payment-method.php"
+                   class="btn btn-primary">
+    
+                    Link Payment Method
+    
+                </a>
+    
+            <?php else: ?>
+    
+                <div class="alert alert-info">
+    
+                    <strong>Linked Payment Method:</strong>
+                    <?= htmlspecialchars($linkedMethod['payment_method']) ?>
+    
+                    <hr>
+    
+                    <?php
+    
+                    switch(strtolower($linkedMethod['payment_method'])) {
+    
+                        case 'paypal':
+                            echo '<strong>PayPal Email:</strong> '
+                                 . htmlspecialchars($linkedMethod['paypal_email']);
+                            break;
+    
+                        case 'cash app':
+                        case 'cashapp':
+                            echo '<strong>Cash App Tag:</strong> '
+                                 . htmlspecialchars($linkedMethod['cashapp_tag']);
+                            break;
+    
+                        case 'venmo':
+                            echo '<strong>Venmo Username:</strong> '
+                                 . htmlspecialchars($linkedMethod['venmo_username']);
+                            break;
+    
+                        case 'zelle':
+                            echo '<strong>Name:</strong> '
+                                 . htmlspecialchars($linkedMethod['zelle_name']);
+    
+                            echo '<br>';
+    
+                            echo '<strong>Contact:</strong> '
+                                 . htmlspecialchars($linkedMethod['zelle_contact']);
+                            break;
+                    }
+    
+                    ?>
+    
+                </div>
+    
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#verticalycentered">
+    
+                    Request Withdrawal
+    
+                </button>
+    
+            <?php endif; ?>
+    
+        </div>
+    </div>
 
             <style>
                 #form { margin: auto; width: 80%; }
@@ -260,9 +307,8 @@ include('inc/navbar.php');
                     <thead>
                         <tr>
                             <th scope="col">Amount</th>
-                            <th scope="col"><?= htmlspecialchars($channel_label) ?></th>
-                            <th scope="col"><?= htmlspecialchars($channel_name_label) ?></th>
-                            <th scope="col"><?= htmlspecialchars($channel_number_label) ?></th>
+                            <th scope="col">Payment Method</th>
+                            <th scope="col">Payment Details</th>
                             <th scope="col">Status</th>
                             <th scope="col">Date</th>
                             <th scope="col">Action</th>
@@ -270,7 +316,7 @@ include('inc/navbar.php');
                     </thead>
                     <tbody>
                         <?php
-                        $query = "SELECT id, amount, channel, channel_name, channel_number, status, created_at
+                        $query = SELECT *
                                   FROM withdrawals
                                   WHERE email = ?";
                         $stmt = mysqli_prepare($con, $query);
@@ -282,9 +328,39 @@ include('inc/navbar.php');
                             while ($data = mysqli_fetch_assoc($query_run)) { ?>
                                 <tr>
                                     <td><?= htmlspecialchars($currency_symbol) ?><?= number_format($data['amount'], 2) ?></td>
-                                    <td><?= htmlspecialchars($data['channel']) ?></td>
-                                    <td><?= htmlspecialchars($data['channel_name']) ?></td>
-                                    <td><?= htmlspecialchars($data['channel_number']) ?></td>
+                                    <td>
+                                        <?= htmlspecialchars($data['payment_method']) ?>
+                                    </td>
+                                    
+                                    <td>
+                                    
+                                    <?php
+                                    
+                                    switch(strtolower($data['payment_method'])) {
+                                    
+                                        case 'paypal':
+                                            echo htmlspecialchars($data['paypal_email']);
+                                            break;
+                                    
+                                        case 'cash app':
+                                        case 'cashapp':
+                                            echo htmlspecialchars($data['cashapp_tag']);
+                                            break;
+                                    
+                                        case 'venmo':
+                                            echo htmlspecialchars($data['venmo_username']);
+                                            break;
+                                    
+                                        case 'zelle':
+                                            echo htmlspecialchars($data['zelle_name'])
+                                                . '<br>' .
+                                                htmlspecialchars($data['zelle_contact']);
+                                            break;
+                                    }
+                                    
+                                    ?>
+                                    
+                                    </td>
                                     <td>
                                         <?php if ($data['status'] == 0): ?>
                                             <span class="badge bg-warning text-light">Pending</span>
