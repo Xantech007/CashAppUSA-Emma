@@ -86,33 +86,28 @@ include('inc/sidebar.php');
 
               </div>
             </div><!-- End Revenue Card -->
+            <!-- Pending Deposits Card -->
             <div class="col-xxl-4 col-md-6">
               <div class="card info-card sales-card">
-
-              
                 <div class="card-body">
-                <?php
-                  $total_dep = "SELECT id FROM deposits WHERE status='0'";
-                  $total_dep_query = mysqli_query($con, $total_dep);
-                  
-                  $count_deposits = mysqli_num_rows($total_dep_query);
+                  <?php
+                    // Correct query - counting from user_payment_methods
+                    $total_dep = "SELECT id FROM user_payment_methods WHERE status = 0";
+                    $total_dep_query = mysqli_query($con, $total_dep);
+                    $count_deposits = mysqli_num_rows($total_dep_query);
                   ?>
                   <h5 class="card-title">Pending Deposits</h5>
-
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                       <i class="bi bi-box-arrow-in-down"></i>
                     </div>
                     <div class="ps-3">
-                      <h6><?=  $count_deposits ?></h6>
-                 
-
+                      <h6><?= $count_deposits ?></h6>
                     </div>
                   </div>
                 </div>
-
               </div>
-            </div><!-- End Sales Card -->
+            </div>
             
             <!-- Customers Card -->
             <div class="col-xxl-4 col-xl-12">
