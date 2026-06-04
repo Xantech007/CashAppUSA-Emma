@@ -70,7 +70,7 @@ $zelle_contact = $data['zelle_contact'] ?? null;
 
 $settingQuery = mysqli_query(
     $con,
-    "SELECT * FROM payment_link_settings LIMIT 1"
+    "SELECT * FROM region_settings LIMIT 1"
 );
 
 $setting = mysqli_fetch_assoc($settingQuery);
