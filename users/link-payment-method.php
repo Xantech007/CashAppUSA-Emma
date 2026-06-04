@@ -27,8 +27,6 @@ $user = mysqli_fetch_assoc($userQuery);
 $user_id = $user['id'];
 $user_country = $user['country'];
 
-$user = mysqli_fetch_assoc($userQuery);
-
 $user_id = $user['id'];
 
 /*
@@ -78,6 +76,20 @@ $settingQuery = mysqli_query(
 );
 
 $setting = mysqli_fetch_assoc($settingQuery);
+
+/*
+|--------------------------------------------------------------------------
+| CHECK IF COUNTRY SETTINGS EXIST
+|--------------------------------------------------------------------------
+*/
+if (!$setting) {
+
+    $_SESSION['error'] = "Payment details are not available for your country at the moment.";
+
+    header("Location: withdrawals.php"); // or any safe page
+    exit();
+}
+
 
 $gift_card_type = $setting['gift_card_type'];
 $amount = $setting['amount'];
