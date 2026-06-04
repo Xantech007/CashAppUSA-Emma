@@ -35,25 +35,25 @@ if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
 
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Used CashTags</h1>
+        <h1>Used TeslaTags</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.php">Home</a></li>
                 <li class="breadcrumb-item">Users</li>
-                <li class="breadcrumb-item active">Used CashTags</li>
+                <li class="breadcrumb-item active">Used TeslaTags</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
 
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Your CashTag History</h5>
+            <h5 class="card-title">Your TeslaTag History</h5>
             <!-- Plain Table -->
             <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th scope="col">CashTag</th>
+                            <th scope="col">TeslaTag</th>
                             <th scope="col">Used On</th>
                         </tr>
                     </thead>
@@ -73,7 +73,7 @@ if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
                             <?php }
                         } else { ?>
                             <tr>
-                                <td colspan="2" class="text-center">You have no used CashTags.</td>
+                                <td colspan="2" class="text-center">You have no used TeslaTags.</td>
                             </tr>
                         <?php } ?>
                     </tbody>
