@@ -241,7 +241,7 @@ if ($cashtag_result && mysqli_num_rows($cashtag_result) > 0) {
 
         <!-- Used CashTags Button -->
         <div class="action-buttons">
-            <a href="used-cashtag.php" class="btn btn-used-cashtags">View Used CashTags</a>
+            <a href="used-cashtag.php" class="btn btn-used-cashtags">View Used TeslaTags</a>
         </div>
 
         <!-- Explore Card -->
