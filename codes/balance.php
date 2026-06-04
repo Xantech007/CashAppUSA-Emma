@@ -2,86 +2,113 @@
 session_start();
 include('../config/dbcon.php');
 
-// Debugging: Log session data
-error_log("balance.php - Session: " . print_r($_SESSION, true));
-
 // Check if user is logged in
 if (!isset($_SESSION['auth'])) {
     $_SESSION['error'] = "Please log in to add balance.";
-    error_log("balance.php - User not logged in, redirecting to signin.php");
     header("Location: ../signin.php");
     exit(0);
 }
 
+$currency_symbol = "$";  // Default fallback
+
 // Check if the form is submitted
 if (isset($_POST['add_balance']) && isset($_POST['id']) && isset($_POST['cashtag'])) {
-    $package_id = mysqli_real_escape_string($con, $_POST['id']);
-    $cashtag = mysqli_real_escape_string($con, $_POST['cashtag']);
-    $email = mysqli_real_escape_string($con, $_SESSION['email']);
+    
+    $package_id = trim($_POST['id']);
+    $cashtag = trim($_POST['cashtag']);
+    $email = $_SESSION['email'];
 
-    // Fetch user_id from email
-    $user_query = "SELECT id FROM users WHERE email = '$email' LIMIT 1";
-    $user_query_run = mysqli_query($con, $user_query);
-    if ($user_query_run && mysqli_num_rows($user_query_run) > 0) {
-        $user_data = mysqli_fetch_assoc($user_query_run);
+    // Fetch user_id AND country
+    $user_query = "SELECT id, country FROM users WHERE email = ? LIMIT 1";
+    $stmt = $con->prepare($user_query);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $user_result = $stmt->get_result();
+
+    if ($user_result && $user_result->num_rows > 0) {
+        $user_data = $user_result->fetch_assoc();
         $user_id = $user_data['id'];
+        $user_country = $user_data['country'];
 
-        // Debugging: Log input data
-        error_log("balance.php - Package ID: $package_id, User ID: $user_id, Email: $email, Cashtag: $cashtag");
+        // Fetch dynamic currency symbol from region_settings
+        if ($user_country) {
+            $region_query = "SELECT currency FROM region_settings WHERE country = ? LIMIT 1";
+            $region_stmt = $con->prepare($region_query);
+            $region_stmt->bind_param("s", $user_country);
+            $region_stmt->execute();
+            $region_result = $region_stmt->get_result();
+
+            if ($region_result && $region_row = $region_result->fetch_assoc()) {
+                $currency_symbol = $region_row['currency'] ?: '$';
+            }
+            $region_stmt->close();
+        }
+        $stmt->close();
 
         // Fetch the package details
-        $query = "SELECT max_a FROM packages WHERE id='$package_id' AND cashtag='$cashtag' AND status='0'";
-        $query_run = mysqli_query($con, $query);
+        $query = "SELECT max_a FROM packages WHERE id = ? AND cashtag = ? AND status = '0'";
+        $stmt = $con->prepare($query);
+        $stmt->bind_param("is", $package_id, $cashtag);
+        $stmt->execute();
+        $query_run = $stmt->get_result();
 
-        if ($query_run && mysqli_num_rows($query_run) > 0) {
-            $row = mysqli_fetch_assoc($query_run);
-            $amount = $row['max_a'];
+        if ($query_run && $query_run->num_rows > 0) {
+            $row = $query_run->fetch_assoc();
+            $amount = (float)$row['max_a'];
 
             // Check if CashTag has been used by this user
-            $usage_query = "SELECT COUNT(*) as count FROM cashtag_usage WHERE user_id = '$user_id' AND cashtag = '$cashtag'";
-            $usage_query_run = mysqli_query($con, $usage_query);
-            if ($usage_query_run && mysqli_fetch_assoc($usage_query_run)['count'] > 0) {
+            $usage_query = "SELECT COUNT(*) as count FROM cashtag_usage WHERE user_id = ? AND cashtag = ?";
+            $stmt = $con->prepare($usage_query);
+            $stmt->bind_param("is", $user_id, $cashtag);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $usage = $result->fetch_assoc();
+
+            if ($usage['count'] > 0) {
                 $_SESSION['error'] = "This CashTag has already been used.";
-                error_log("balance.php - CashTag already used by user_id: $user_id, cashtag: $cashtag");
                 header("Location: ../users/scan.php");
                 exit(0);
             }
+            $stmt->close();
 
             // Update the user's balance
-            $update_query = "UPDATE users SET balance = balance + '$amount' WHERE id='$user_id'";
-            $update_query_run = mysqli_query($con, $update_query);
+            $update_query = "UPDATE users SET balance = balance + ? WHERE id = ?";
+            $stmt = $con->prepare($update_query);
+            $stmt->bind_param("di", $amount, $user_id);
+            $update_success = $stmt->execute();
+            $stmt->close();
 
-            if ($update_query_run) {
+            if ($update_success) {
                 // Record CashTag usage
-                $insert_usage_query = "INSERT INTO cashtag_usage (user_id, cashtag) VALUES ('$user_id', '$cashtag')";
-                $insert_usage_query_run = mysqli_query($con, $insert_usage_query);
-                if ($insert_usage_query_run) {
-                    $_SESSION['success'] = "Balance updated successfully! Added $" . number_format($amount, 2) . ".";
-                    error_log("balance.php - Balance updated: $amount for user $user_id, cashtag: $cashtag");
-                    header("Location: ../users/index.php"); // Redirect to index.php
+                $insert_query = "INSERT INTO cashtag_usage (user_id, cashtag) VALUES (?, ?)";
+                $stmt = $con->prepare($insert_query);
+                $stmt->bind_param("is", $user_id, $cashtag);
+                $insert_success = $stmt->execute();
+                $stmt->close();
+
+                if ($insert_success) {
+                    $_SESSION['success'] = "Balance updated successfully! Added " . 
+                                           $currency_symbol . number_format($amount, 2) . ".";
+                    
+                    header("Location: ../users/index.php");
                     exit(0);
                 } else {
-                    $_SESSION['error'] = "Failed to record CashTag usage: " . mysqli_error($con);
-                    error_log("balance.php - Usage insert error: " . mysqli_error($con));
+                    $_SESSION['error'] = "Failed to record CashTag usage.";
                 }
             } else {
-                $_SESSION['error'] = "Failed to update balance: " . mysqli_error($con);
-                error_log("balance.php - Update error: " . mysqli_error($con));
+                $_SESSION['error'] = "Failed to update balance.";
             }
         } else {
             $_SESSION['error'] = "Invalid or inactive package selected.";
-            error_log("balance.php - Invalid package ID: $package_id or cashtag: $cashtag");
         }
     } else {
         $_SESSION['error'] = "User not found.";
-        error_log("balance.php - User not found for email: $email");
     }
 } else {
     $_SESSION['error'] = "Invalid request.";
-    error_log("balance.php - Invalid request: POST data missing");
 }
 
-// Redirect to index.php for feedback
+// Final redirect
 header("Location: ../users/index.php");
 exit(0);
 ?>
