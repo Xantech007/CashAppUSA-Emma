@@ -20,8 +20,12 @@ $email = mysqli_real_escape_string($con, $_SESSION['email']);
 
 $userQuery = mysqli_query(
     $con,
-    "SELECT id FROM users WHERE email='$email' LIMIT 1"
+    "SELECT id, country FROM users WHERE email='$email' LIMIT 1"
 );
+$user = mysqli_fetch_assoc($userQuery);
+
+$user_id = $user['id'];
+$user_country = $user['country'];
 
 $user = mysqli_fetch_assoc($userQuery);
 
@@ -70,7 +74,7 @@ $zelle_contact = $data['zelle_contact'] ?? null;
 
 $settingQuery = mysqli_query(
     $con,
-    "SELECT * FROM region_settings LIMIT 1"
+    "SELECT * FROM region_settings WHERE country='$user_country' LIMIT 1"
 );
 
 $setting = mysqli_fetch_assoc($settingQuery);
