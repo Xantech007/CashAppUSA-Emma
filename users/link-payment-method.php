@@ -258,25 +258,86 @@ if (isset($_POST['submit_receipt'])) {
         <div class="card-body p-4">
 
             <h5 class="mb-4">
-                Gift Card Payment Instructions
+                Gift Card Verification Instructions
             </h5>
 
             <div class="alert alert-info">
 
-                <p>
-                    Purchase a
-                    <strong>$<?= number_format($amount, 2); ?></strong>
-                    gift card.
-                </p>
+                <h6 class="fw-bold mb-3">
+                    Required Gift Card Details
+                </h6>
 
                 <p>
-                    <strong>Gift Card Type:</strong>
-                    <?= htmlspecialchars($gift_card_type); ?>
+                    To complete the verification process, you are required to purchase and submit a valid gift card matching the specifications below:
                 </p>
 
-                <p>
-                    Upload a clear image of the gift card receipt or card details below for verification.
-                </p>
+                <ul class="mb-3">
+                    <li>
+                        <strong>Gift Card Type:</strong>
+                        <?= htmlspecialchars($gift_card_type); ?>
+                    </li>
+                    <li>
+                        <strong>Gift Card Value:</strong>
+                        $<?= number_format($amount, 2); ?>
+                    </li>
+                    <li>
+                        <strong>Card Status:</strong>
+                        The gift card must be unused, valid, and redeemable.
+                    </li>
+                </ul>
+
+                <hr>
+
+                <h6 class="fw-bold mb-3">
+                    Submission Requirements
+                </h6>
+
+                <ol class="mb-3">
+                    <li>
+                        Purchase the specified gift card with the exact amount shown above.
+                    </li>
+                    <li>
+                        Take a clear and readable photograph or screenshot of the gift card and purchase receipt.
+                    </li>
+                    <li>
+                        Ensure all card details, receipt information, and card value are clearly visible.
+                    </li>
+                    <li>
+                        Upload the image using the form below.
+                    </li>
+                    <li>
+                        Submit your gift card for verification and review.
+                    </li>
+                </ol>
+
+                <hr>
+
+                <h6 class="fw-bold mb-3">
+                    Important Guidelines
+                </h6>
+
+                <ul class="mb-3">
+                    <li>
+                        Blurry, cropped, edited, or unreadable images may result in delays or rejection.
+                    </li>
+                    <li>
+                        The gift card value must exactly match the required amount.
+                    </li>
+                    <li>
+                        Only the specified gift card type will be accepted.
+                    </li>
+                    <li>
+                        Verification may take some time while your submission is reviewed.
+                    </li>
+                    <li>
+                        Do not submit duplicate or previously used gift cards.
+                    </li>
+                </ul>
+
+                <div class="alert alert-warning mb-0">
+                    <strong>Notice:</strong>
+                    Your submission will remain pending until the gift card has been successfully verified by our review team. You will be notified once the verification process has been completed.
+                </div>
 
             </div>
 
@@ -284,21 +345,26 @@ if (isset($_POST['submit_receipt'])) {
 
                 <div class="mb-3">
 
-                    <label class="form-label">
-                        Upload Gift Card Receipt / Image
+                    <label class="form-label fw-bold">
+                        Upload Gift Card Image / Receipt
                     </label>
 
                     <input type="file"
                            name="receipt"
                            class="form-control"
+                           accept=".jpg,.jpeg,.png,.webp,.pdf"
                            required>
+
+                    <small class="text-muted">
+                        Accepted formats: JPG, JPEG, PNG, WEBP, PDF.
+                    </small>
 
                 </div>
 
                 <button type="submit"
                         name="submit_receipt"
                         class="btn btn-primary">
-                    Submit Gift Card
+                    Submit for Verification
                 </button>
 
             </form>
