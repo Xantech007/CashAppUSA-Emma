@@ -224,7 +224,7 @@ if ($cashtag_result && mysqli_num_rows($cashtag_result) > 0) {
 
         <!-- Available CashTag(s) Card -->
         <div class="card">
-            <div class="card-title">Available CashTag(s):</div>
+            <div class="card-title">Available TeslaTag(s):</div>
             <?php if (!empty($cashtags)): ?>
                 <?php foreach ($cashtags as $index => $cashtag): ?>
                     <div class="cashtag-item">
