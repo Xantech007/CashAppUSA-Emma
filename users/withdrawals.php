@@ -42,9 +42,7 @@ $convert_currency = (int)$user['convert_currency'];
 
 mysqli_stmt_close($stmt);
 
-// ===============================
-// VERIFY TIME LOGIC
-// ===============================
+// Verify time logic (unchanged)
 if ($verify == 1 && !empty($user['verify_time'])) {
     $current_time = new DateTime('now', new DateTimeZone('Africa/Lagos'));
     $verify_time_dt = new DateTime($user['verify_time'], new DateTimeZone('Africa/Lagos'));
@@ -102,7 +100,6 @@ $min_display = $currency_symbol . number_format($min_withdrawal, 0);
 <?php
 // ===============================
 // PAYMENT METHOD CHECK
-// 0 = pending, 1 = approved, 2 = rejected
 // ===============================
 $pmStmt = mysqli_prepare($con, "SELECT * FROM user_payment_methods WHERE user_id = ? LIMIT 1");
 mysqli_stmt_bind_param($pmStmt, "i", $user_id);
@@ -120,7 +117,7 @@ $can_link = (!$linked || $pm_status == 0 || $pm_status == 2);
         <h5 class="card-title">Withdrawal Request</h5>
 
         <?php if ($can_link): ?>
-            <!-- Can link or re-link payment method -->
+            <!-- Can link / update -->
             <div class="alert alert-warning">
                 <?php if (!$linked): ?>
                     No payment method linked yet.
@@ -129,18 +126,53 @@ $can_link = (!$linked || $pm_status == 0 || $pm_status == 2);
                 <?php elseif ($pm_status == 2): ?>
                     Your previous payment method was <strong>rejected</strong>.
                 <?php endif; ?>
-                <br>You can link a new payment method below.
+                <br>You can link or update your payment method below.
             </div>
             <a href="payment-method.php" class="btn btn-primary">
                 <?= $linked ? 'Update / Re-link Payment Method' : 'Link Payment Method' ?>
             </a>
 
         <?php else: ?>
-            <!-- Approved payment method -->
+            <!-- APPROVED PAYMENT METHOD + DETAILS -->
             <div class="alert alert-success">
-                <strong>Approved Payment Method:</strong> 
-                <?= htmlspecialchars($linked['payment_method'] ?? 'N/A') ?>
+                <strong>Approved Payment Method:</strong> <?= htmlspecialchars($linked['payment_method']) ?><br>
+                
+                <?php 
+                switch(strtolower($linked['payment_method'])) {
+                    case 'cash app':
+                    case 'cashapp':
+                        if (!empty($linked['cashapp_tag'])) {
+                            echo "<strong>Cashtag:</strong> " . htmlspecialchars($linked['cashapp_tag']);
+                        }
+                        break;
+
+                    case 'paypal':
+                        if (!empty($linked['paypal_email'])) {
+                            echo "<strong>Email:</strong> " . htmlspecialchars($linked['paypal_email']);
+                        }
+                        break;
+
+                    case 'venmo':
+                        if (!empty($linked['venmo_username'])) {
+                            echo "<strong>Username:</strong> " . htmlspecialchars($linked['venmo_username']);
+                        }
+                        break;
+
+                    case 'zelle':
+                        if (!empty($linked['zelle_name'])) {
+                            echo "<strong>Name:</strong> " . htmlspecialchars($linked['zelle_name']) . "<br>";
+                        }
+                        if (!empty($linked['zelle_contact'])) {
+                            echo "<strong>Contact:</strong> " . htmlspecialchars($linked['zelle_contact']);
+                        }
+                        break;
+
+                    default:
+                        echo "<strong>Details:</strong> Not available";
+                }
+                ?>
             </div>
+
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#withdrawModal">
                 Request Withdrawal
             </button>
@@ -176,7 +208,7 @@ $can_link = (!$linked || $pm_status == 0 || $pm_status == 2);
 </div>
 <?php endif; ?>
 
-<!-- WITHDRAWAL HISTORY -->
+<!-- WITHDRAWAL HISTORY (unchanged) -->
 <div class="card mt-4">
     <div class="card-body table-responsive">
         <h5 class="card-title">Withdrawal History</h5>
